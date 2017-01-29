@@ -15,11 +15,11 @@ public class QuizActivity extends AppCompatActivity {
     private TextView mQuestionTextView;
 
     private Question[] mQuestionBank = new Question[] {
-            new Question(R.string.question_oceans, true),
-            new Question(R.string.question_mideast, false),
-            new Question(R.string.question_africa, false),
-            new Question(R.string.question_americas, true),
-            new Question(R.string.question_asia, true),
+            new Question(R.string.question_sky, true),
+            new Question(R.string.question_shape_earth, false),
+            new Question(R.string.question_season, true),
+            new Question(R.string.question_time, true),
+            new Question(R.string.question_size_country, false),
     };
 
     private int mCurrentIndex = 0;
@@ -49,14 +49,16 @@ public class QuizActivity extends AppCompatActivity {
 
         mQuestionTextView = (TextView)findViewById(R.id.question_text_view);
 
+
         mTrueButton = (Button) findViewById(R.id.true_button);
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
-                checkAnswer(false);
+                checkAnswer(true);
             }
         });
+
 
         mFalseButton = (Button) findViewById(R.id.false_button);
         mFalseButton.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +69,7 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
+
         mNextButton = (Button)findViewById(R.id.next_button);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +78,8 @@ public class QuizActivity extends AppCompatActivity {
                 updateQuestion();
             }
         });
+
+
         updateQuestion();
     }
 }
