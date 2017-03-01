@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical" >
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical"
+              android:weightSum="1">
 
     <TextView
         android:id="@+id/question_text_view"
@@ -15,25 +16,28 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_weight="0.07">
 
         <Button
             android:id="@+id/true_button"
-            android:layout_width="wrap_content"
+            android:layout_width="121dp"
             android:layout_height="wrap_content"
             android:text="@string/true_button" />
 
         <Button
             android:id="@+id/false_button"
-            android:layout_width="wrap_content"
+            android:layout_width="121dp"
             android:layout_height="wrap_content"
             android:text="@string/false_button" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_weight="0.06"
+        android:weightSum="1">
 
         <!--<Button-->
             <!--android:id="@+id/previous_button"-->
@@ -42,10 +46,24 @@
             <!--android:text="@string/previous_button"-->
             <!--android:drawableLeft="@drawable/arrow_left"-->
             <!--android:drawablePadding="4dp" />-->
+
+        <Button
+            android:id="@+id/cheat_button"
+            android:layout_width="118dp"
+            android:layout_height="wrap_content"
+            android:text="@string/cheat_button"
+            android:layout_weight="0.75"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="0.21">
+
         <ImageButton
             android:id="@+id/previous_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="52dp"
             android:src="@drawable/arrow_left"
             android:contentDescription="@string/previous_button" />
 
@@ -58,8 +76,8 @@
             <!--android:drawablePadding="4dp" />-->
         <ImageButton
             android:id="@+id/next_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="52dp"
             android:src="@drawable/arrow_right"
             android:contentDescription="@string/next_button" />
     </LinearLayout>
