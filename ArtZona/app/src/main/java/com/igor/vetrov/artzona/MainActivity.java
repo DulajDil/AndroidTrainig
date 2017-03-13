@@ -39,12 +39,12 @@ public class MainActivity extends Activity {
         mNotLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, R.string.login_not_username, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, R.string.login_not_username, Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(MainActivity.this, JobsListActivity.class);
+                startActivity(intent);
             }
         });
-
-
-
     }
 
     @Override

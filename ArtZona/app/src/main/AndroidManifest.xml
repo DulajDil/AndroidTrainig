@@ -12,7 +12,7 @@
         android:name=".Application"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".MainActivity">
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <data android:scheme="vk5871716"/>
@@ -26,11 +26,11 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <!--<activity-->
-            <!--android:name="com.vk.sdk.VKServiceActivity"-->
-            <!--android:label="ServiceActivity"-->
-            <!--android:theme="@style/VK.Transparent">-->
-        <!--</activity>-->
+        <activity
+            android:name="com.vk.sdk.VKServiceActivity"
+            android:label="ServiceActivity"
+            android:theme="@style/VK.Transparent">
+        </activity>
     </application>
 
 </manifest>
