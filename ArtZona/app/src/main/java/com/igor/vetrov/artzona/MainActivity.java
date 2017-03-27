@@ -17,9 +17,9 @@ public class MainActivity extends Activity {
 
     private Button mLogin;
     private Button mNotLogin;
-    private String[] scope = new String[] {
-        VKScope.GROUPS, VKScope.MESSAGES, VKScope.FRIENDS
-    };
+//    private String[] scope = new String[] {
+//        VKScope.GROUPS, VKScope.MESSAGES, VKScope.FRIENDS
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,38 +30,40 @@ public class MainActivity extends Activity {
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                VKSdk.login(MainActivity.this, scope);
+                Intent intent = new Intent(MainActivity.this, VkLoginActivity.class);
+                startActivity(intent);
+//                VKSdk.login(MainActivity.this, scope);
 //                Toast.makeText(MainActivity.this, R.string.login_with_username, Toast.LENGTH_SHORT).show();
             }
         });
 
-        mNotLogin = (Button) findViewById(R.id.login_not_username);
-        mNotLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Toast.makeText(MainActivity.this, R.string.login_not_username, Toast.LENGTH_SHORT).show();
-
-                Intent intent = new Intent(MainActivity.this, JobsListActivity.class);
-                startActivity(intent);
-            }
-        });
+//        mNotLogin = (Button) findViewById(R.id.login_not_username);
+//        mNotLogin.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                Toast.makeText(MainActivity.this, R.string.login_not_username, Toast.LENGTH_SHORT).show();
+//
+//                Intent intent = new Intent(MainActivity.this, JobsListActivity.class);
+//                startActivity(intent);
+//            }
+//        });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
-            @Override
-            public void onResult(VKAccessToken res) {
-                // Пользователь успешно авторизовался
-                Toast.makeText(getApplicationContext(), "GOOD", Toast.LENGTH_SHORT).show();
-            }
-            @Override
-            public void onError(VKError error) {
-                // Произошла ошибка авторизации (например, пользователь запретил авторизацию)
-                Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_SHORT).show();
-            }
-        })) {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (!VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
+//            @Override
+//            public void onResult(VKAccessToken res) {
+//                // Пользователь успешно авторизовался
+//                Toast.makeText(getApplicationContext(), "GOOD", Toast.LENGTH_SHORT).show();
+//            }
+//            @Override
+//            public void onError(VKError error) {
+//                // Произошла ошибка авторизации (например, пользователь запретил авторизацию)
+//                Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_SHORT).show();
+//            }
+//        })) {
+//            super.onActivityResult(requestCode, resultCode, data);
+//        }
+//    }
 }
