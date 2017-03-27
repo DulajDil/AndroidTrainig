@@ -34,6 +34,7 @@ public class CrimeListFragment extends Fragment {
     }
 
     private class CrimeHolder extends RecyclerView.ViewHolder {
+//        public TextView mTitleTextView;
         private TextView mTitleTextView;
         private TextView mDateTextView;
         private CheckBox mSolvedCheckBox;
@@ -41,9 +42,10 @@ public class CrimeListFragment extends Fragment {
 
         public CrimeHolder(View itemView) {
             super(itemView);
-            mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_crime_title_text_view);
-            mDateTextView = (TextView) itemView.findViewById(R.id.list_item_crime_date_text_view);
-            mSolvedCheckBox = (CheckBox) itemView.findViewById(R.id.list_item_crime_solved_check_box);
+//            mTitleTextView = (TextView) itemView;
+            mTitleTextView = (TextView) itemView.findViewById(R.id.crime_list_item_titleTextView);
+            mDateTextView = (TextView) itemView.findViewById(R.id.crime_list_item_dateTextView);
+            mSolvedCheckBox = (CheckBox) itemView.findViewById(R.id.crime_list_item_solvedCheckBox);
         }
 
         public void bindCrime(Crime crime) {
@@ -65,12 +67,14 @@ public class CrimeListFragment extends Fragment {
         @Override
         public CrimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+//            View view = layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
             View view = layoutInflater.inflate(R.layout.list_item_crime, parent, false);
             return new CrimeHolder(view);
         }
         @Override
         public void onBindViewHolder(CrimeHolder holder, int position) {
             Crime crime = mCrimes.get(position);
+//            holder.mDateTextView.setText(crime.getTitle());
             holder.bindCrime(crime);
         }
         @Override
