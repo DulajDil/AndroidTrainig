@@ -18,6 +18,10 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/crime_list_item_solvedCheckBox"
         android:textStyle="bold"
+<<<<<<< HEAD
+=======
+        android:padding="4dp"
+>>>>>>> origin/master
         android:text="Crime title" />
 
     <TextView
@@ -27,5 +31,10 @@
         android:layout_below="@id/crime_list_item_titleTextView"
         android:layout_toLeftOf="@id/crime_list_item_solvedCheckBox"
         android:padding="4dp"
+<<<<<<< HEAD
         tools:text="Crime date" />
+=======
+        tools:text="Crime Date" />
+
+>>>>>>> origin/master
 </RelativeLayout>
