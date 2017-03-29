@@ -39,14 +39,18 @@ public class VkLoginActivity extends FragmentActivity {
                 access_token = res;
                 Log.w(String.format("access_token: %s", access_token.toString()), "");
                 // успешная авторизация
-                FragmentManager fm = getSupportFragmentManager();
-                Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
-                if (fragment == null) {
-                    fragment = createFragment();
-                    fm.beginTransaction().add(R.id.fragmentContainer, fragment).commit();
+                Toast.makeText(getApplicationContext(), "ВЫ АВТОРИЗОВАЛИСЬ", Toast.LENGTH_SHORT).show();
+
+                class EventsListActivity extends SingleFragmentActivity {
+
+                    @Override
+                    protected Fragment createFragment() {
+                        return new EventsListFragment();
+                    }
                 }
 
-                Toast.makeText(getApplicationContext(), "ВЫ АВТОРИЗОВАЛИСЬ", Toast.LENGTH_SHORT).show();
+                new EventsListActivity();
+
             }
             @Override
             public void onError(VKError error) {
