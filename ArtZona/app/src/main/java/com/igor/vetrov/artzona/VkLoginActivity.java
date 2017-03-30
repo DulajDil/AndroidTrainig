@@ -18,6 +18,8 @@ import com.vk.sdk.api.VKError;
 
 public class VkLoginActivity extends FragmentActivity {
 
+    private static final String TAG = "VkLoginActivity";
+
     private String[] scope = new String[] {
             VKScope.GROUPS, VKScope.MESSAGES, VKScope.FRIENDS
     };
@@ -37,20 +39,9 @@ public class VkLoginActivity extends FragmentActivity {
             @Override
             public void onResult(VKAccessToken res) {
                 access_token = res;
-                Log.w(String.format("access_token: %s", access_token.toString()), "");
+                Log.i(TAG, String.format("access_token: %s", access_token.toString()));
                 // успешная авторизация
                 Toast.makeText(getApplicationContext(), "ВЫ АВТОРИЗОВАЛИСЬ", Toast.LENGTH_SHORT).show();
-
-                class EventsListActivity extends SingleFragmentActivity {
-
-                    @Override
-                    protected Fragment createFragment() {
-                        return new EventsListFragment();
-                    }
-                }
-
-                new EventsListActivity();
-
             }
             @Override
             public void onError(VKError error) {
