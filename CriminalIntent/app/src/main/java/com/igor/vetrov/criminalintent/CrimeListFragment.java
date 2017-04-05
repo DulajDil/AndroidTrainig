@@ -16,6 +16,7 @@ import java.util.List;
 public class CrimeListFragment extends Fragment {
 
     private static final int REQUEST_CRIME = 1;
+    private int position;
 
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
@@ -43,7 +44,8 @@ public class CrimeListFragment extends Fragment {
             mAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mAdapter);
         } else {
-            mAdapter.notifyItemChanged();
+//            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemChanged(position);
         }
 
 
@@ -78,6 +80,7 @@ public class CrimeListFragment extends Fragment {
 //            Toast.makeText(getActivity(), mCrime.getTitle() + " кликнут!", Toast.LENGTH_SHORT).show();
 //            Intent intent = new Intent(getActivity(), CrimeActivity.class);
             Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
+            position = CrimeLab.get(getActivity()).getPosition(mCrime.getId());
             startActivityForResult(intent, REQUEST_CRIME);
         }
     }
