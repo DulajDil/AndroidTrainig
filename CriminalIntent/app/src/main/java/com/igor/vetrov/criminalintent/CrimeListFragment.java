@@ -1,5 +1,6 @@
 package com.igor.vetrov.criminalintent;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import java.util.Date;
 import java.util.List;
 
 public class CrimeListFragment extends Fragment {
@@ -71,7 +73,7 @@ public class CrimeListFragment extends Fragment {
         public void bindCrime(Crime crime) {
             mCrime = crime;
             mTitleTextView.setText(mCrime.getTitle());
-            mDateTextView.setText(mCrime.getDate().toString());
+            mDateTextView.setText(mCrime.getStringDateFormat());
             mSolvedCheckBox.setChecked(mCrime.isSolved());
         }
 
@@ -91,8 +93,16 @@ public class CrimeListFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
         if (requestCode == REQUEST_CRIME) {
-            // Обработка результата
+            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            mCrime.setDate(date);
+            updateDate();
+//            mDateButton.setText(mCrime.getDate().toString());
+
+
         }
     }
 

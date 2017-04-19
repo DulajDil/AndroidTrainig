@@ -1,6 +1,7 @@
 package com.igor.vetrov.criminalintent;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,12 +15,16 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 public class CrimeFragment extends Fragment {
 
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
+    public static final String EXTRA_ANSWER_IS_TRUE =
+            "com.example.igolu.geoquiz.answer_is_true";
 
     private static final int REQUEST_DATE = 0;
 
@@ -66,7 +71,8 @@ public class CrimeFragment extends Fragment {
 
         mDateButton = (Button)v.findViewById(R.id.crime_date);
         if (mDateButton != null) {
-            mDateButton.setText(mCrime.getStringDateFormat());
+//            mDateButton.setText(mCrime.getStringDateFormat());
+            updateDate();
             mDateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -87,10 +93,40 @@ public class CrimeFragment extends Fragment {
                  mCrime.setSolved(isChecked);
             }
         });
-
         return v;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == REQUEST_DATE) {
+            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            mCrime.setDate(date);
+            updateDate();
+//            mDateButton.setText(mCrime.getDate().toString());
+        }
+    }
+
     public void returnResult() {
         getActivity().setResult(Activity.RESULT_OK, null);
+    }
+
+    private void setAnswerShownResult(boolean isAnswerShown) {
+        Intent data = new Intent();
+        data.putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown);
+        setResult(RESULT_OK, data);
+
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_DATE, date);
+
+        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
+    }
+
+    private void updateDate() {
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
+        String stringDateFormat = dateFormat.format(mCrime.getDate());
+        mDateButton.setText(stringDateFormat);
     }
 }
