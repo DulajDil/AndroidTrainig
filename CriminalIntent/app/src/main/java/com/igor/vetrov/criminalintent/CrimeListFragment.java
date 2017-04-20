@@ -1,6 +1,5 @@
 package com.igor.vetrov.criminalintent;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,9 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class CrimeListFragment extends Fragment {
 
@@ -22,6 +24,8 @@ public class CrimeListFragment extends Fragment {
 
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
+    private UUID mEditCrimeId;
+    private Date mEditCrimeDate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -93,16 +97,16 @@ public class CrimeListFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) {
-            return;
-        }
         if (requestCode == REQUEST_CRIME) {
-            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
-            mCrime.setDate(date);
-            updateDate();
-//            mDateButton.setText(mCrime.getDate().toString());
-
-
+            if (resultCode == 0) {
+                mEditCrimeDate = null;
+                return;
+            }
+            mEditCrimeDate = (Date) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_DATE);
+            mEditCrimeId = (UUID) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
+            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
+            String stringDateFormat = dateFormat.format(mEditCrimeDate);
+            Toast.makeText(getActivity(), String.format("Изменена дата на:\n%s!", stringDateFormat), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -123,8 +127,13 @@ public class CrimeListFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(CrimeHolder holder, int position) {
-            Crime crime = mCrimes.get(position);
+        public void onBindViewHolder(CrimeHolder holder, int position2) {
+            Crime crime = mCrimes.get(position2);
+            if (position == position2) {
+                if (mEditCrimeDate != null) {
+                    crime.setDate(mEditCrimeDate);
+                }
+            }
 //            holder.mDateTextView.setText(crime.getTitle());
             holder.bindCrime(crime);
         }

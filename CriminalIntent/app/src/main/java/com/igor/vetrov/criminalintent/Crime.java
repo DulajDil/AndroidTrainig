@@ -48,6 +48,8 @@ public class Crime {
 
     public void setDate(Date date) {
         mDate = date;
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
+        mStringDateFormat = dateFormat.format(mDate);
     }
 
     public void setSolved(boolean solved) {

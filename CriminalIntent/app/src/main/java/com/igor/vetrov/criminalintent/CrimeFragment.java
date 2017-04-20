@@ -23,8 +23,10 @@ public class CrimeFragment extends Fragment {
 
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
-    public static final String EXTRA_ANSWER_IS_TRUE =
-            "com.example.igolu.geoquiz.answer_is_true";
+    public static final String EXTRA_CRIME_DATE =
+            "com.example.igolu.geoquiz.crime_date";
+    public static final String EXTRA_CRIME_ID =
+            "com.example.igolu.geoquiz.crime_id";
 
     private static final int REQUEST_DATE = 0;
 
@@ -105,23 +107,16 @@ public class CrimeFragment extends Fragment {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mCrime.setDate(date);
             updateDate();
+            returnResult(date, mCrime.getId());
 //            mDateButton.setText(mCrime.getDate().toString());
         }
     }
 
-    public void returnResult() {
-        getActivity().setResult(Activity.RESULT_OK, null);
-    }
-
-    private void setAnswerShownResult(boolean isAnswerShown) {
-        Intent data = new Intent();
-        data.putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown);
-        setResult(RESULT_OK, data);
-
+    public void returnResult(Date date, UUID id) {
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_DATE, date);
-
-        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
+        intent.putExtra(EXTRA_CRIME_DATE, date);
+        intent.putExtra(EXTRA_CRIME_ID, id);
+        getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
     private void updateDate() {
