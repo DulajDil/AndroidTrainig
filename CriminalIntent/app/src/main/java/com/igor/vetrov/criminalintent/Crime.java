@@ -2,6 +2,7 @@ package com.igor.vetrov.criminalintent;
 
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -10,6 +11,7 @@ public class Crime {
     private UUID mId;
     private String mTitle;
     private Date mDate;
+    private String mTime;
     private boolean mSolved;
     private String mStringDateFormat;
 
@@ -17,6 +19,8 @@ public class Crime {
         // Генерирование уникального идентификатора
         mId = UUID.randomUUID();
         mDate = new Date();
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        mTime = timeFormat.format(mDate);
 //        DateFormat dateFormat = android.text.format.DateFormat.getLongDateFormat(context);
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
         mStringDateFormat = dateFormat.format(mDate);
@@ -40,6 +44,10 @@ public class Crime {
 
     public boolean isSolved() {
         return mSolved;
+    }
+
+    public String getTime() {
+        return mTime;
     }
 
     public void setTitle(String title) {

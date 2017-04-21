@@ -62,6 +62,7 @@ public class CrimeListFragment extends Fragment {
 //        public TextView mTitleTextView;
         private TextView mTitleTextView;
         private TextView mDateTextView;
+        private TextView mTimeTextView;
         private CheckBox mSolvedCheckBox;
         private Crime mCrime;
 
@@ -71,6 +72,7 @@ public class CrimeListFragment extends Fragment {
 //            mTitleTextView = (TextView) itemView;
             mTitleTextView = (TextView) itemView.findViewById(R.id.crime_list_item_titleTextView);
             mDateTextView = (TextView) itemView.findViewById(R.id.crime_list_item_dateTextView);
+            mTimeTextView = (TextView) itemView.findViewById(R.id.crime_list_item_timeTextView);
             mSolvedCheckBox = (CheckBox) itemView.findViewById(R.id.crime_list_item_solvedCheckBox);
         }
 
@@ -78,6 +80,7 @@ public class CrimeListFragment extends Fragment {
             mCrime = crime;
             mTitleTextView.setText(mCrime.getTitle());
             mDateTextView.setText(mCrime.getStringDateFormat());
+            mTimeTextView.setText(mCrime.getTime());
             mSolvedCheckBox.setChecked(mCrime.isSolved());
         }
 

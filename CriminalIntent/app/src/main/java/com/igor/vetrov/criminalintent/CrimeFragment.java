@@ -23,16 +23,19 @@ public class CrimeFragment extends Fragment {
 
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
+    private static final String DIALOG_TIME = "DialogTime";
     public static final String EXTRA_CRIME_DATE =
             "com.example.igolu.geoquiz.crime_date";
     public static final String EXTRA_CRIME_ID =
             "com.example.igolu.geoquiz.crime_id";
 
     private static final int REQUEST_DATE = 0;
+    private static final int REQUEST_TIME = 0;
 
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
+    private Button mTimeButton;
     private CheckBox mSolvedCheckBox;
 
     public static CrimeFragment newInstance(UUID crimeId) {
@@ -86,6 +89,20 @@ public class CrimeFragment extends Fragment {
             });
         }
 
+        mTimeButton = (Button)v.findViewById(R.id.crime_time);
+        if (mTimeButton != null) {
+            mTimeButton.setText(mCrime.getTime());
+            mTimeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentManager manager = getFragmentManager();
+                    TimePickerFragment dialog = TimePickerFragment.newInstance(mCrime.getTime());
+                    dialog.setTargetFragment(CrimeFragment.this, REQUEST_TIME);
+                    dialog.show(manager, DIALOG_TIME);
+                }
+            });
+        }
+
         mSolvedCheckBox = (CheckBox)v.findViewById(R.id.crime_solved);
         mSolvedCheckBox.setChecked(mCrime.isSolved());
         mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -124,4 +141,6 @@ public class CrimeFragment extends Fragment {
         String stringDateFormat = dateFormat.format(mCrime.getDate());
         mDateButton.setText(stringDateFormat);
     }
+
+
 }

@@ -29,5 +29,12 @@
         android:layout_toLeftOf="@id/crime_list_item_solvedCheckBox"
         android:padding="4dp"
         tools:text="Crime Date" />
+    <TextView
+        android:id="@+id/crime_list_item_timeTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/crime_list_item_dateTextView"
+        android:padding="4dp"
+        tools:text="Crime Time" />
 
 </RelativeLayout>
