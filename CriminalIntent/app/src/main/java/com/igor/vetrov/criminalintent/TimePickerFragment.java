@@ -16,8 +16,9 @@ import java.util.Date;
 public class TimePickerFragment extends DialogFragment {
 
     public static final String EXTRA_TIME = "com.igor.vetrov.criminalintent.time";
-    private TimePicker mTimePicker;
     private static final String ARG_TIME = "time";
+
+    private TimePicker mTimePicker;
 
     public static TimePickerFragment newInstance(String time) {
         Bundle args = new Bundle();
@@ -30,7 +31,7 @@ public class TimePickerFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        String time = (String) getArguments().getSerializable(ARG_TIME);
+        Date date = (Date) getArguments().getSerializable(ARG_TIME);
 
         View v = LayoutInflater.from(getActivity())
                 .inflate(R.layout.dialog_time, null);
@@ -43,7 +44,7 @@ public class TimePickerFragment extends DialogFragment {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                sendResult(Activity.RESULT_OK, time);
+//                                sendResult(Activity.RESULT_OK, Crime.gettingTime(date));
                             }
                         })
                 .create();

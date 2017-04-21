@@ -15,15 +15,23 @@ public class Crime {
     private boolean mSolved;
     private String mStringDateFormat;
 
+    public static String gettingTime(Date date) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        return timeFormat.format(date);
+    }
+
+    public static String gettingDate(Date date) {
+//        DateFormat dateFormat = android.text.format.DateFormat.getLongDateFormat(context);
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
+        return dateFormat.format(date);
+    }
+
     public Crime() {
         // Генерирование уникального идентификатора
         mId = UUID.randomUUID();
         mDate = new Date();
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        mTime = timeFormat.format(mDate);
-//        DateFormat dateFormat = android.text.format.DateFormat.getLongDateFormat(context);
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
-        mStringDateFormat = dateFormat.format(mDate);
+        mTime = gettingTime(mDate);
+        mStringDateFormat = gettingDate(mDate);
     }
 
     public UUID getId() {
