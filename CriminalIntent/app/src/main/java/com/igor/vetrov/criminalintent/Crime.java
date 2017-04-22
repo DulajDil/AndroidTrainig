@@ -66,6 +66,7 @@ public class Crime {
         mDate = date;
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
         mStringDateFormat = dateFormat.format(mDate);
+        mTime = gettingTime(mDate);
     }
 
     public void setSolved(boolean solved) {

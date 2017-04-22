@@ -31,6 +31,7 @@ public class CrimeFragment extends Fragment {
 
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_TIME = 0;
+    private static final int CRIME_TIME = -2;
 
     private Crime mCrime;
     private EditText mTitleField;
@@ -96,7 +97,7 @@ public class CrimeFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     FragmentManager manager = getFragmentManager();
-                    TimePickerFragment dialog = TimePickerFragment.newInstance(mCrime.getTime());
+                    TimePickerFragment dialog = TimePickerFragment.newInstance(mCrime.getDate());
                     dialog.setTargetFragment(CrimeFragment.this, REQUEST_TIME);
                     dialog.show(manager, DIALOG_TIME);
                 }
@@ -117,16 +118,22 @@ public class CrimeFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) {
-            return;
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_DATE) {
+                Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+                mCrime.setDate(date);
+                updateDate();
+                returnResult(date, mCrime.getId());
+            }
+        } else if (resultCode == CRIME_TIME) {
+            if (requestCode == REQUEST_TIME) {
+                Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
+                mCrime.setDate(date);
+                updateTime();
+                returnResult(date, mCrime.getId());
+            }
         }
-        if (requestCode == REQUEST_DATE) {
-            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
-            mCrime.setDate(date);
-            updateDate();
-            returnResult(date, mCrime.getId());
-//            mDateButton.setText(mCrime.getDate().toString());
-        }
+
     }
 
     public void returnResult(Date date, UUID id) {
@@ -142,5 +149,7 @@ public class CrimeFragment extends Fragment {
         mDateButton.setText(stringDateFormat);
     }
 
-
+    private void updateTime() {
+        mTimeButton.setText(mCrime.getTime());
+    }
 }
