@@ -6,5 +6,6 @@
     <string name="crime_solved_label">Раскрыто?</string>
     <string name="date_picker_title">Дата престулпения:</string>
     <string name="time_picker_title">Время престулпения:</string>
+    <string name="crime_date_changed">Изменить Дату</string>
     <string name="show_list_view">Показать LIST VIEW</string>
 </resources>

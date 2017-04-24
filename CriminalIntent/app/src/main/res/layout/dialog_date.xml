@@ -1,7 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<DatePicker xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/dialog_date_date_picker"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:calendarViewShown="false"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <DatePicker
+        android:id="@+id/dialog_date_date_picker"
+        android:layout_width="306dp"
+        android:layout_height="wrap_content"
+        android:calendarViewShown="false"
+        android:layout_gravity="center"/>
+
+    <Button
+        android:id="@+id/dialog_date_ok"
+        android:layout_width="157dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:background="@color/colorAccent"
+        android:text="@string/crime_date_changed"
+        android:textColor="@android:color/background_light" />
+
+</LinearLayout>
+
+
+
 
