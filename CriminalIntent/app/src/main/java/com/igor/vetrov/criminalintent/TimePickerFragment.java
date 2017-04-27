@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TimePicker;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -21,7 +20,7 @@ public class TimePickerFragment extends DialogFragment {
 
     public static final String EXTRA_TIME = "com.igor.vetrov.criminalintent.time";
     private static final String ARG_TIME = "time";
-    private static final int CRIME_TIME = -2;
+    public static final int TIME_REQUEST_CODE = 10;
 
     private TimePicker mTimePicker;
     private Calendar mCalendar;
@@ -62,7 +61,7 @@ public class TimePickerFragment extends DialogFragment {
                                 mCalendar.set(Calendar.HOUR_OF_DAY, hour);
                                 int minute = mTimePicker.getMinute();
                                 mCalendar.set(Calendar.MINUTE, minute);
-                                sendResult(CRIME_TIME, mCalendar.getTime());
+                                sendResult(Activity.RESULT_OK, mCalendar.getTime());
                             }
                         })
                 .create();
@@ -74,7 +73,6 @@ public class TimePickerFragment extends DialogFragment {
         }
         Intent intent = new Intent();
         intent.putExtra(EXTRA_TIME, date);
-
-        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
+        getTargetFragment().onActivityResult(TIME_REQUEST_CODE, resultCode, intent);
     }
 }

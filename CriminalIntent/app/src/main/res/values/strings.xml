@@ -7,5 +7,6 @@
     <string name="date_picker_title">Дата престулпения:</string>
     <string name="time_picker_title">Время престулпения:</string>
     <string name="crime_date_changed">Изменить Дату</string>
+    <string name="crime_date_not_changed">Вернуться обратно</string>
     <string name="show_list_view">Показать LIST VIEW</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.igor.vetrov.criminalintent;
+package com.igor.vetrov.criminalintent.old;
 
 
 import android.app.Activity;
@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import com.igor.vetrov.criminalintent.CrimeListActivity;
+import com.igor.vetrov.criminalintent.R;
 
 public class MainActivity extends Activity {
 

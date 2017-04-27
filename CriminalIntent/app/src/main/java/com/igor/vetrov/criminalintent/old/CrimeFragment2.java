@@ -1,4 +1,4 @@
-package com.igor.vetrov.criminalintent;
+package com.igor.vetrov.criminalintent.old;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import com.igor.vetrov.criminalintent.Crime;
+import com.igor.vetrov.criminalintent.R;
 
 public class CrimeFragment2 extends Fragment {
 

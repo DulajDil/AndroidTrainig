@@ -25,13 +25,9 @@ public class CrimeFragment extends Fragment {
     private static final String DIALOG_DATE = "DialogDate";
     private static final String DIALOG_TIME = "DialogTime";
     public static final String EXTRA_CRIME_DATE =
-            "com.example.igolu.geoquiz.crime_date";
+            "com.igor.vetrov.criminalintent.crime_date";
     public static final String EXTRA_CRIME_ID =
-            "com.example.igolu.geoquiz.crime_id";
-
-    private static final int REQUEST_DATE = 0;
-    private static final int REQUEST_TIME = 0;
-    private static final int CRIME_TIME = -2;
+            "com.igor.vetrov.criminalintent.crime_id";
 
     private Crime mCrime;
     private EditText mTitleField;
@@ -84,7 +80,7 @@ public class CrimeFragment extends Fragment {
                 public void onClick(View v) {
                     FragmentManager manager = getFragmentManager();
                     DatePickerFragment2 dialog = DatePickerFragment2.newInstance(mCrime.getDate());
-                    dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
+                    dialog.setTargetFragment(CrimeFragment.this, 0);
                     dialog.show(manager, DIALOG_DATE);
                 }
             });
@@ -98,7 +94,7 @@ public class CrimeFragment extends Fragment {
                 public void onClick(View v) {
                     FragmentManager manager = getFragmentManager();
                     TimePickerFragment dialog = TimePickerFragment.newInstance(mCrime.getDate());
-                    dialog.setTargetFragment(CrimeFragment.this, REQUEST_TIME);
+                    dialog.setTargetFragment(CrimeFragment.this, 0);
                     dialog.show(manager, DIALOG_TIME);
                 }
             });
@@ -118,23 +114,22 @@ public class CrimeFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_DATE) {
-                Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+        if (requestCode == DatePickerFragment2.DATE_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                Date date = (Date) data.getSerializableExtra(DatePickerFragment2.EXTRA_DATE);
                 mCrime.setDate(date);
                 updateDate();
                 returnResult(date, mCrime.getId());
             }
-        } else if (resultCode == CRIME_TIME) {
-            if (requestCode == REQUEST_TIME) {
+        } else if (requestCode == TimePickerFragment.TIME_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
                 Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
                 mCrime.setDate(date);
                 updateTime();
                 returnResult(date, mCrime.getId());
             }
         }
-
-    }
+   }
 
     public void returnResult(Date date, UUID id) {
         Intent intent = new Intent();

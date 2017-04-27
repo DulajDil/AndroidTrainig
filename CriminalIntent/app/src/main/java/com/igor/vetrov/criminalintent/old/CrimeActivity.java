@@ -1,8 +1,11 @@
-package com.igor.vetrov.criminalintent;
+package com.igor.vetrov.criminalintent.old;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+
+import com.igor.vetrov.criminalintent.CrimeFragment;
+import com.igor.vetrov.criminalintent.SingleFragmentActivity;
 
 import java.util.UUID;
 

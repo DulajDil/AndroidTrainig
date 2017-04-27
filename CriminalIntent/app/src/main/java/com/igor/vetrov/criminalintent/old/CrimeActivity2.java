@@ -1,10 +1,12 @@
-package com.igor.vetrov.criminalintent;
+package com.igor.vetrov.criminalintent.old;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.igor.vetrov.criminalintent.R;
 
 public class CrimeActivity2 extends Activity {
 
