@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -117,6 +118,9 @@ public class CrimeFragment extends Fragment {
         if (requestCode == DatePickerFragment2.DATE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 Date date = (Date) data.getSerializableExtra(DatePickerFragment2.EXTRA_DATE);
+                DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
+                String stringDateFormat = dateFormat.format(date);
+                Toast.makeText(getActivity(), String.format("Дата изменена на: %s", stringDateFormat), Toast.LENGTH_SHORT).show();
                 mCrime.setDate(date);
                 updateDate();
                 returnResult(date, mCrime.getId());

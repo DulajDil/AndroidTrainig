@@ -91,7 +91,6 @@ public class CrimeListFragment extends Fragment {
 //            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
 
             Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
-
             position = CrimeLab.get(getActivity()).getPosition(mCrime.getId());
             startActivityForResult(intent, REQUEST_CRIME);
         }
@@ -107,8 +106,8 @@ public class CrimeListFragment extends Fragment {
             mEditCrimeDate = (Date) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_DATE);
             mEditCrimeId = (UUID) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
             DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
-            String stringDateFormat = dateFormat.format(mEditCrimeDate);
-            Toast.makeText(getActivity(), String.format("Изменена дата на:\n%s!", stringDateFormat), Toast.LENGTH_SHORT).show();
+//            String stringDateFormat = dateFormat.format(mEditCrimeDate);
+//            Toast.makeText(getActivity(), String.format("Изменена дата на:\n%s!", stringDateFormat), Toast.LENGTH_SHORT).show();
         }
     }
 

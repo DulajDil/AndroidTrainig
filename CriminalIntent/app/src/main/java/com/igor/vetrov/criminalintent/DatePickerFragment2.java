@@ -65,24 +65,20 @@ public class DatePickerFragment2 extends DialogFragment {
             int month1 = mDatePicker.getMonth();
             int day1 = mDatePicker.getDayOfMonth();
             Date date2 = new GregorianCalendar(year1, month1, day1, hour, minute).getTime();
-            if (year == year1 & month == month1 & day == day1) {
-                startActSendResult(Activity.RESULT_CANCELED, date2);
-            } else {
+            if (year != year1 || month != month1 || day != day1) {
                 startActSendResult(Activity.RESULT_OK, date2);
             }
+            getActivity().finish();
+//            onStop();
         });
         return v;
     }
 
     private void startActSendResult(int code, Date date) {
         Intent intent = new Intent(getActivity(), CrimePagerActivity.class);
-        if (code == Activity.RESULT_CANCELED) {
-            Toast.makeText(getActivity(), "Дата не изменилась", Toast.LENGTH_SHORT).show();
-        } else if (code == Activity.RESULT_OK) {
-            intent.putExtra(EXTRA_DATE, date);
-            Toast.makeText(getActivity(), String.format("Дата изменена на: %s", date), Toast.LENGTH_SHORT).show();
-        }
+        intent.putExtra(EXTRA_DATE, date);
+        getActivity().setResult(Activity.RESULT_OK, intent);
         getTargetFragment().onActivityResult(DATE_REQUEST_CODE, code, intent);
-        startActivityForResult(intent, code);
+        startActivityForResult(intent, DATE_REQUEST_CODE);
     }
 }
