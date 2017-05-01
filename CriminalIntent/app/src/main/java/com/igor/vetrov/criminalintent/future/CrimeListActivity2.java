@@ -14,6 +14,6 @@ public class CrimeListActivity2 extends SingleFragmentActivity2 {
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.activity_fragment;
+        return R.layout.activity_masterdetail;
     }
 }
