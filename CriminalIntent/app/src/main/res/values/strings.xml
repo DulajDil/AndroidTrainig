@@ -8,5 +8,9 @@
     <string name="time_picker_title">Время престулпения:</string>
     <string name="crime_date_changed">Изменить Дату</string>
     <string name="crime_date_not_changed">Вернуться обратно</string>
+    <string name="new_crime">Новое Преступление</string>
+    <string name="show_subtitle">Показать Заголовок</string>
+    <string name="hide_subtitle">Скрыть Заголовок</string>
+    <string name="subtitle_format">%1$s crimes</string>
     <string name="show_list_view">Показать LIST VIEW</string>
 </resources>
