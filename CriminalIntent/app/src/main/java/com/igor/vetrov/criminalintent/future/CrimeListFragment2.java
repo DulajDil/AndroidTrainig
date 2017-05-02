@@ -1,8 +1,10 @@
-package com.igor.vetrov.criminalintent;
+package com.igor.vetrov.criminalintent.future;
+
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,18 +13,23 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import java.text.DateFormat;
+import com.igor.vetrov.criminalintent.Crime;
+import com.igor.vetrov.criminalintent.CrimeFragment;
+import com.igor.vetrov.criminalintent.CrimeLab;
+import com.igor.vetrov.criminalintent.CrimePagerActivity;
+import com.igor.vetrov.criminalintent.R;
+
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public class CrimeListFragment extends Fragment {
+public class CrimeListFragment2 extends Fragment {
 
     private static final int REQUEST_CRIME = 1;
     private int position;
 
     private RecyclerView mCrimeRecyclerView;
-    private CrimeAdapter mAdapter;
+    private CrimeListFragment2.CrimeAdapter mAdapter;
     private UUID mEditCrimeId;
     private Date mEditCrimeDate;
 
@@ -46,19 +53,14 @@ public class CrimeListFragment extends Fragment {
         List<Crime> crimes = crimeLab.getCrimes();
 
         if (mAdapter == null) {
-            mAdapter = new CrimeAdapter(crimes);
+            mAdapter = new CrimeListFragment2.CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mAdapter);
         } else {
-//            mAdapter.notifyDataSetChanged();
             mAdapter.notifyItemChanged(position);
         }
-
-
-//        mCrimeRecyclerView.getAdapter().notifyItemMoved(0, 5);
     }
 
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-//        public TextView mTitleTextView;
         private TextView mTitleTextView;
         private TextView mDateTextView;
         private TextView mTimeTextView;
@@ -68,7 +70,6 @@ public class CrimeListFragment extends Fragment {
         public CrimeHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
-//            mTitleTextView = (TextView) itemView;
             mTitleTextView = (TextView) itemView.findViewById(R.id.crime_list_item_titleTextView);
             mDateTextView = (TextView) itemView.findViewById(R.id.crime_list_item_dateTextView);
             mTimeTextView = (TextView) itemView.findViewById(R.id.crime_list_item_timeTextView);
@@ -85,13 +86,11 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-//            Toast.makeText(getActivity(), mCrime.getTitle() + " кликнут!", Toast.LENGTH_SHORT).show();
-//            Intent intent = new Intent(getActivity(), CrimeActivity.class);
-//            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
-
-            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
-            position = CrimeLab.get(getActivity()).getPosition(mCrime.getId());
-            startActivityForResult(intent, REQUEST_CRIME);
+            Fragment fragment = CrimeFragment.newInstance(mCrime.getId());
+            FragmentManager fm = getActivity().getSupportFragmentManager();
+            fm.beginTransaction()
+                    .add(R.id.detail_fragment_container, fragment)
+                    .commit();
         }
     }
 
@@ -104,13 +103,10 @@ public class CrimeListFragment extends Fragment {
             }
             mEditCrimeDate = (Date) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_DATE);
             mEditCrimeId = (UUID) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
-            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
-//            String stringDateFormat = dateFormat.format(mEditCrimeDate);
-//            Toast.makeText(getActivity(), String.format("Изменена дата на:\n%s!", stringDateFormat), Toast.LENGTH_SHORT).show();
         }
     }
 
-    private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
+    private class CrimeAdapter extends RecyclerView.Adapter<CrimeListFragment2.CrimeHolder> {
 
         private List<Crime> mCrimes;
 
@@ -119,22 +115,20 @@ public class CrimeListFragment extends Fragment {
         }
 
         @Override
-        public CrimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public CrimeListFragment2.CrimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-//            View view = layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
             View view = layoutInflater.inflate(R.layout.list_item_crime, parent, false);
-            return new CrimeHolder(view);
+            return new CrimeListFragment2.CrimeHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(CrimeHolder holder, int position2) {
+        public void onBindViewHolder(CrimeListFragment2.CrimeHolder holder, int position2) {
             Crime crime = mCrimes.get(position2);
             if (position == position2) {
                 if (mEditCrimeDate != null) {
                     crime.setDate(mEditCrimeDate);
                 }
             }
-//            holder.mDateTextView.setText(crime.getTitle());
             holder.bindCrime(crime);
         }
 
@@ -143,4 +137,5 @@ public class CrimeListFragment extends Fragment {
             return mCrimes.size();
         }
     }
+
 }
