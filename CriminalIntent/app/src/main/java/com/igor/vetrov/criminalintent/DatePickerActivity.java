@@ -4,6 +4,7 @@ package com.igor.vetrov.criminalintent;
 import android.support.v4.app.Fragment;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class DatePickerActivity extends SingleFragmentActivity {
 
@@ -12,6 +13,7 @@ public class DatePickerActivity extends SingleFragmentActivity {
     @Override
     protected Fragment createFragment() {
         Date date = (Date) getIntent().getSerializableExtra(EXTRA_CRIME_DATE);
-        return DatePickerFragment2.newInstance(date);
+        UUID crimeId = (UUID) getIntent().getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
+        return DatePickerFragment2.newInstance(date, crimeId);
     }
 }
