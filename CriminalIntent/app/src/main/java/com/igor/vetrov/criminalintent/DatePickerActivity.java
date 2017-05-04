@@ -8,12 +8,11 @@ import java.util.UUID;
 
 public class DatePickerActivity extends SingleFragmentActivity {
 
-    private static final String EXTRA_CRIME_DATE = "com.igor.vetrov.criminalintent.crime_date";
-
     @Override
     protected Fragment createFragment() {
-        Date date = (Date) getIntent().getSerializableExtra(EXTRA_CRIME_DATE);
+        Date date = (Date) getIntent().getSerializableExtra(CrimeFragment.EXTRA_CRIME_DATE);
         UUID crimeId = (UUID) getIntent().getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
-        return DatePickerFragment2.newInstance(date, crimeId);
+        boolean mSubtitleVisible = (boolean) getIntent().getSerializableExtra(CrimeFragment.EXTRA_SUBTITLE);
+        return DatePickerFragment2.newInstance(date, crimeId, mSubtitleVisible);
     }
 }

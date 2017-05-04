@@ -81,7 +81,7 @@ public class CrimeListFragment extends Fragment {
             case R.id.menu_item_new_crime:
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).addCrime(crime);
-                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
+                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId(), mSubtitleVisible);
                 startActivity(intent);
                 return true;
             case R.id.menu_item_show_subtitle:
@@ -154,7 +154,7 @@ public class CrimeListFragment extends Fragment {
 //            Intent intent = new Intent(getActivity(), CrimeActivity.class);
 //            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
 
-            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
+            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId(), mSubtitleVisible);
             position = CrimeLab.get(getActivity()).getPosition(mCrime.getId());
             startActivityForResult(intent, REQUEST_CRIME);
         }
@@ -169,6 +169,7 @@ public class CrimeListFragment extends Fragment {
             }
             mEditCrimeDate = (Date) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_DATE);
             mEditCrimeId = (UUID) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
+            mSubtitleVisible = (boolean) data.getSerializableExtra(CrimeFragment.EXTRA_SUBTITLE);
             DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
 //            String stringDateFormat = dateFormat.format(mEditCrimeDate);
 //            Toast.makeText(getActivity(), String.format("Изменена дата на:\n%s!", stringDateFormat), Toast.LENGTH_SHORT).show();

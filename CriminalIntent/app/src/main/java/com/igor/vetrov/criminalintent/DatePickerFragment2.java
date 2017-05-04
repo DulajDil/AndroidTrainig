@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -18,19 +17,21 @@ import java.util.UUID;
 
 public class DatePickerFragment2 extends DialogFragment {
 
-    public static final String EXTRA_DATE = "com.igor.vetrov.criminalintent.crimne_date";
     public static final int DATE_REQUEST_CODE = 20;
 
     private static final String ARG_DATE = "date";
-    private static final String ARG_ID = "crimeId";
+    private static final String ARG_CRIME_ID = "crime_id";
+    private static final String ARG_SUBTITLE = "subtitle_visible";
     private DatePicker mDatePicker;
     private Button mOk;
     private UUID crimeId;
+    private boolean mSubtitleVisible;
 
-    public static DatePickerFragment2 newInstance(Date date, UUID crimeId) {
+    public static DatePickerFragment2 newInstance(Date date, UUID crimeId, boolean subtitleVisible) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_DATE, date);
-        args.putSerializable(ARG_ID, crimeId);
+        args.putSerializable(ARG_CRIME_ID, crimeId);
+        args.putSerializable(ARG_SUBTITLE, subtitleVisible);
 
         DatePickerFragment2 fragment = new DatePickerFragment2();
         fragment.setArguments(args);
@@ -40,7 +41,8 @@ public class DatePickerFragment2 extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final Date date = (Date) getArguments().getSerializable(ARG_DATE);
-        this.crimeId = (UUID) getArguments().getSerializable(ARG_ID);
+        this.crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
+        this.mSubtitleVisible = (boolean) getArguments().getSerializable(ARG_SUBTITLE);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -81,10 +83,10 @@ public class DatePickerFragment2 extends DialogFragment {
     }
 
     private void startActSendResult(int code, Date date) {
-        Intent intent = CrimePagerActivity.newIntent(getActivity(), crimeId);
+        Intent intent = CrimePagerActivity.newIntent(getActivity(), crimeId, mSubtitleVisible);
 
 //        Intent intent = new Intent(getActivity(), CrimePagerActivity.class);
-        intent.putExtra(EXTRA_DATE, date);
+        intent.putExtra(CrimeFragment.EXTRA_CRIME_DATE, date);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getTargetFragment().onActivityResult(DATE_REQUEST_CODE, code, intent);
         startActivityForResult(intent, DATE_REQUEST_CODE);

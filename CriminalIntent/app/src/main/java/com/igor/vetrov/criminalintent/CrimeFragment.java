@@ -23,22 +23,27 @@ import java.util.UUID;
 public class CrimeFragment extends Fragment {
 
     private static final String ARG_CRIME_ID = "crime_id";
+    private static final String ARG_SUBTITLE = "subtitle_visible";
     private static final String DIALOG_DATE = "DialogDate";
     private static final String DIALOG_TIME = "DialogTime";
     public static final String EXTRA_CRIME_DATE =
             "com.igor.vetrov.criminalintent.crime_date";
     public static final String EXTRA_CRIME_ID =
             "com.igor.vetrov.criminalintent.crime_id";
+    public static final String EXTRA_SUBTITLE =
+            "com.igor.vetrov.criminalintent.subtitle_visible";
 
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
     private Button mTimeButton;
     private CheckBox mSolvedCheckBox;
+    private boolean mSubtitleVisible;
 
-    public static CrimeFragment newInstance(UUID crimeId) {
+    public static CrimeFragment newInstance(UUID crimeId, boolean subtitleVisible) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_CRIME_ID, crimeId);
+        args.putSerializable(ARG_SUBTITLE, subtitleVisible);
 
         CrimeFragment fragment = new CrimeFragment();
         fragment.setArguments(args);
@@ -51,6 +56,7 @@ public class CrimeFragment extends Fragment {
 //        mCrime = new Crime();
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
+        mSubtitleVisible = (boolean) getArguments().getSerializable(ARG_SUBTITLE);
     }
 
     @Override
@@ -80,7 +86,7 @@ public class CrimeFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     FragmentManager manager = getFragmentManager();
-                    DatePickerFragment2 dialog = DatePickerFragment2.newInstance(mCrime.getDate(), mCrime.getId());
+                    DatePickerFragment2 dialog = DatePickerFragment2.newInstance(mCrime.getDate(), mCrime.getId(), mSubtitleVisible);
                     dialog.setTargetFragment(CrimeFragment.this, 0);
                     dialog.show(manager, DIALOG_DATE);
                 }
@@ -117,7 +123,7 @@ public class CrimeFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == DatePickerFragment2.DATE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                Date date = (Date) data.getSerializableExtra(DatePickerFragment2.EXTRA_DATE);
+                Date date = (Date) data.getSerializableExtra(EXTRA_CRIME_DATE);
                 DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
                 String stringDateFormat = dateFormat.format(date);
                 Toast.makeText(getActivity(), String.format("Дата изменена на: %s", stringDateFormat), Toast.LENGTH_SHORT).show();
@@ -139,6 +145,7 @@ public class CrimeFragment extends Fragment {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_CRIME_DATE, date);
         intent.putExtra(EXTRA_CRIME_ID, id);
+        intent.putExtra(EXTRA_SUBTITLE, mSubtitleVisible);
         getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
