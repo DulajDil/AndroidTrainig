@@ -1,6 +1,7 @@
 package com.igor.vetrov.criminalintent;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,9 @@ import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -33,6 +37,8 @@ public class CrimeFragment extends Fragment {
     public static final String EXTRA_SUBTITLE =
             "com.igor.vetrov.criminalintent.subtitle_visible";
 
+    public static final int DELETE_CRIME_CODE = 30;
+
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
@@ -57,6 +63,7 @@ public class CrimeFragment extends Fragment {
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
         mSubtitleVisible = (boolean) getArguments().getSerializable(ARG_SUBTITLE);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -117,6 +124,28 @@ public class CrimeFragment extends Fragment {
             }
         });
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_crime, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_delete_crime:
+                Intent intent = new Intent(getActivity(), CrimeListActivity.class);
+//                intent.putExtra(EXTRA_CRIME_ID, mCrime.getId());
+//                getActivity().setResult(DELETE_CRIME_CODE, intent);
+//                getTargetFragment().onActivityResult(DELETE_CRIME_CODE, Activity.RESULT_OK, intent);
+                startActivity(intent);
+//                getActivity().finish();
+                return true;
+        default:
+            return false;
+        }
     }
 
     @Override

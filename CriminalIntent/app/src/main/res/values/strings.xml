@@ -9,6 +9,7 @@
     <string name="crime_date_changed">Изменить Дату</string>
     <string name="crime_date_not_changed">Вернуться обратно</string>
     <string name="new_crime">Новое Преступление</string>
+    <string name="delete_curent_crime">Удалить это преступление</string>>
     <string name="show_subtitle">Показать Заголовок</string>
     <string name="hide_subtitle">Скрыть Заголовок</string>
     <string name="subtitle_format">%1$s crimes</string>

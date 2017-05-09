@@ -17,16 +17,18 @@ import java.util.StringTokenizer;
 import java.util.UUID;
 
 public class CrimePagerActivity extends AppCompatActivity {
+
     private static final String EXTRA_CRIME_ID = "com.igor.vetrov.criminalintent.crime_id";
-    private static final String EXTRA_SUBTITLE = "com.igor.vetrov.criminalintent.subtitle_visible";
+
 
     private ViewPager mViewPager;
     private List<Crime> mCrimes;
+    private boolean mSubtitleVisible;
 
     public static Intent newIntent(Context packageContext, UUID crimeId, boolean mSubtitleVisible) {
         Intent intent = new Intent(packageContext, CrimePagerActivity.class);
         intent.putExtra(EXTRA_CRIME_ID, crimeId);
-        intent.putExtra(EXTRA_SUBTITLE, mSubtitleVisible);
+        intent.putExtra(CrimeFragment.EXTRA_SUBTITLE, mSubtitleVisible);
         return intent;
     }
 
@@ -36,7 +38,7 @@ public class CrimePagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crime_pager);
 
         UUID crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
-        boolean mSubtitleVisible = (boolean) getIntent().getSerializableExtra(EXTRA_SUBTITLE);
+        mSubtitleVisible = (boolean) getIntent().getSerializableExtra(CrimeFragment.EXTRA_SUBTITLE);
 
         mViewPager = (ViewPager) findViewById(R.id.activity_crime_pager_view_pager);
         mCrimes = CrimeLab.get(this).getCrimes();
@@ -64,6 +66,8 @@ public class CrimePagerActivity extends AppCompatActivity {
 
     @Override
     public Intent getParentActivityIntent() {
-        return super.getParentActivityIntent().addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Intent intent = super.getParentActivityIntent();
+        intent.putExtra(CrimeFragment.EXTRA_SUBTITLE, mSubtitleVisible);
+        return intent;
     }
 }

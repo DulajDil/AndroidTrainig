@@ -14,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +37,10 @@ public class CrimeListFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Intent intent2 = getActivity().getIntent();
+        if (intent2.getExtras() != null) {
+            mSubtitleVisible = (boolean) intent2.getSerializableExtra(CrimeFragment.EXTRA_SUBTITLE);
+        }
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
@@ -54,6 +60,10 @@ public class CrimeListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Intent intent2 = getActivity().getIntent();
+        if (intent2.getExtras() != null) {
+            UUID serializableExtra = (UUID) intent2.getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
+        }
         updateUI();
     }
 
