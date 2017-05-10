@@ -137,15 +137,12 @@ public class CrimeFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.menu_delete_crime:
                 Intent intent = new Intent(getActivity(), CrimeListActivity.class);
-//                intent.putExtra(EXTRA_CRIME_ID, mCrime.getId());
-//                getActivity().setResult(DELETE_CRIME_CODE, intent);
-//                getTargetFragment().onActivityResult(DELETE_CRIME_CODE, Activity.RESULT_OK, intent);
-                startActivity(intent);
-//                getActivity().finish();
-                return true;
-        default:
-            return false;
+                intent.putExtra(EXTRA_CRIME_ID, mCrime.getId());
+                getActivity().setResult(DELETE_CRIME_CODE, intent);
+                startActivityForResult(intent, Activity.RESULT_OK);
+                getActivity().finish();
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

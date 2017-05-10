@@ -60,10 +60,10 @@ public class CrimeListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Intent intent2 = getActivity().getIntent();
-        if (intent2.getExtras() != null) {
-            UUID serializableExtra = (UUID) intent2.getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
-        }
+//        Intent intent2 = getActivity().getIntent();
+//        if (intent2.getExtras() != null) {
+//            UUID serializableExtra = (UUID) intent2.getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
+//        }
         updateUI();
     }
 
