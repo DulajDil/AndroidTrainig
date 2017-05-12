@@ -20,7 +20,6 @@ public class CrimePagerActivity extends AppCompatActivity {
 
     private static final String EXTRA_CRIME_ID = "com.igor.vetrov.criminalintent.crime_id";
 
-
     private ViewPager mViewPager;
     private List<Crime> mCrimes;
     private boolean mSubtitleVisible;
