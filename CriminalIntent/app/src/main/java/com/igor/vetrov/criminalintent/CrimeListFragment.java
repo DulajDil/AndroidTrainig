@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ public class CrimeListFragment extends Fragment {
 
     private int position;
 
+    private Button mAddCrime;
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
     private boolean mSubtitleVisible;
@@ -47,22 +49,44 @@ public class CrimeListFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    private List<Crime> getCrimes() {
+        CrimeLab crimeLab = CrimeLab.get(getActivity());
+        List<Crime> crimes = crimeLab.getCrimes();
+        return crimes;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        List<Crime> crimes = getCrimes();
         View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
+        mAddCrime = (Button) view.findViewById(R.id.add_crime);
+        if (crimes.size() > 0) {
+            mAddCrime.setVisibility(View.GONE);
+        } else {
+            mAddCrime.setVisibility(View.VISIBLE);
+            mAddCrime.setOnClickListener(v -> {
+                Crime crime = new Crime();
+                CrimeLab.get(getActivity()).addCrime(crime);
+                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId(), mSubtitleVisible);
+                startActivity(intent);
+            });
+        }
         mCrimeRecyclerView = (RecyclerView) view.findViewById(R.id.crime_recycler_view);
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (savedInstanceState != null) {
             mSubtitleVisible = savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE);
         }
-        updateUI();
+        updateUI(crimes);
+        updateSubtitle();
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        updateUI();
+        List<Crime> crimes = getCrimes();
+        updateUI(crimes);
+        updateSubtitle();
     }
 
     @Override
@@ -104,9 +128,6 @@ public class CrimeListFragment extends Fragment {
 
     private void updateSubtitle() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
-//        int crimeCount = crimeLab.getCrimes().size();
-//        String subtitle = getString(R.string.subtitle_format, crimeCount);
-
         int crimeSize = crimeLab.getCrimes().size();
         String subtitle = getResources().getQuantityString(R.plurals.subtitle_plural, crimeSize, crimeSize);
         if (!mSubtitleVisible) {
@@ -116,21 +137,13 @@ public class CrimeListFragment extends Fragment {
         activity.getSupportActionBar().setSubtitle(subtitle);
     }
 
-    private void updateUI() {
-        CrimeLab crimeLab = CrimeLab.get(getActivity());
-        List<Crime> crimes = crimeLab.getCrimes();
-
+    private void updateUI(List<Crime> crimes) {
         if (mAdapter == null) {
             mAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mAdapter);
         } else {
-//            mAdapter.notifyDataSetChanged();
             mAdapter.notifyItemChanged(position);
         }
-        updateSubtitle();
-
-
-//        mCrimeRecyclerView.getAdapter().notifyItemMoved(0, 5);
     }
 
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -171,22 +184,6 @@ public class CrimeListFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CRIME) {
-            if (resultCode == 0) {
-                mEditCrimeDate = null;
-                return;
-            }
-            mEditCrimeDate = (Date) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_DATE);
-            mEditCrimeId = (UUID) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
-            mSubtitleVisible = (boolean) data.getSerializableExtra(CrimeFragment.EXTRA_SUBTITLE);
-            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
-//            String stringDateFormat = dateFormat.format(mEditCrimeDate);
-//            Toast.makeText(getActivity(), String.format("Изменена дата на:\n%s!", stringDateFormat), Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
 
         private List<Crime> mCrimes;
@@ -218,6 +215,22 @@ public class CrimeListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mCrimes.size();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CRIME) {
+            if (resultCode == 0) {
+                mEditCrimeDate = null;
+                return;
+            }
+            mEditCrimeDate = (Date) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_DATE);
+            mEditCrimeId = (UUID) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
+            mSubtitleVisible = (boolean) data.getSerializableExtra(CrimeFragment.EXTRA_SUBTITLE);
+            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
+//            String stringDateFormat = dateFormat.format(mEditCrimeDate);
+//            Toast.makeText(getActivity(), String.format("Изменена дата на:\n%s!", stringDateFormat), Toast.LENGTH_SHORT).show();
         }
     }
 }
