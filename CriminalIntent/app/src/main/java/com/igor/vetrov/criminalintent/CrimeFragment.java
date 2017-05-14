@@ -136,36 +136,36 @@ public class CrimeFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_delete_crime:
-                Intent intent = new Intent(getActivity(), CrimeListActivity.class);
-                intent.putExtra(EXTRA_CRIME_ID, mCrime.getId());
-                getActivity().setResult(DELETE_CRIME_CODE, intent);
-                startActivityForResult(intent, Activity.RESULT_OK);
+                CrimeLab.get(getActivity()).deleteCrime(mCrime);
+                Intent i = new Intent(getActivity(), CrimeListActivity.class);
+                startActivity(i);
                 getActivity().finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == DatePickerFragment2.DATE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                Date date = (Date) data.getSerializableExtra(EXTRA_CRIME_DATE);
-                DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
-                String stringDateFormat = dateFormat.format(date);
-                Toast.makeText(getActivity(), String.format("Дата изменена на: %s", stringDateFormat), Toast.LENGTH_SHORT).show();
-                mCrime.setDate(date);
-                updateDate();
-                returnResult(date, mCrime.getId());
-            }
-        } else if (requestCode == TimePickerFragment.TIME_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
-                mCrime.setDate(date);
-                updateTime();
-                returnResult(date, mCrime.getId());
-            }
+        if (resultCode != Activity.RESULT_OK) {
+            return;
         }
-   }
+        if (requestCode == DatePickerFragment2.DATE_REQUEST_CODE) {
+            Date date = (Date) data.getSerializableExtra(EXTRA_CRIME_DATE);
+            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
+            String stringDateFormat = dateFormat.format(date);
+            Toast.makeText(getActivity(), String.format("Дата изменена на: %s", stringDateFormat), Toast.LENGTH_SHORT).show();
+            mCrime.setDate(date);
+            updateDate();
+            returnResult(date, mCrime.getId());
+        } else if (requestCode == TimePickerFragment.TIME_REQUEST_CODE) {
+            Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
+            mCrime.setDate(date);
+            updateTime();
+            returnResult(date, mCrime.getId());
+        }
+    }
 
     public void returnResult(Date date, UUID id) {
         Intent intent = new Intent();

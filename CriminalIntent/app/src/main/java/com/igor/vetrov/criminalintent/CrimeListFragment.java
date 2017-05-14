@@ -39,7 +39,9 @@ public class CrimeListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         Intent intent2 = getActivity().getIntent();
         if (intent2.getExtras() != null) {
-            mSubtitleVisible = (boolean) intent2.getSerializableExtra(CrimeFragment.EXTRA_SUBTITLE);
+            if (intent2.getSerializableExtra(CrimeFragment.EXTRA_SUBTITLE) != null) {
+                mSubtitleVisible = (boolean) intent2.getSerializableExtra(CrimeFragment.EXTRA_SUBTITLE);
+            }
         }
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -60,10 +62,6 @@ public class CrimeListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//        Intent intent2 = getActivity().getIntent();
-//        if (intent2.getExtras() != null) {
-//            UUID serializableExtra = (UUID) intent2.getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
-//        }
         updateUI();
     }
 
