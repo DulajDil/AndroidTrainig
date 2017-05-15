@@ -10,8 +10,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/crime_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="357dp"
-        android:layout_weight="0.87"/>
+        android:layout_height="334dp" />
 
     <Button
         android:id="@+id/add_crime"
@@ -22,8 +21,9 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_weight="0.08"
-        android:background="@color/colorAccent"
+        android:background="@color/colorPrimary"
+        android:elevation="0dp"
         android:text="@string/not_and_add_crime"
-        android:textColor="@android:color/background_light"/>
+        android:textColor="@android:color/background_light" />
 
 </LinearLayout>
