@@ -36,8 +36,7 @@ public class CrimeFragment extends Fragment {
             "com.igor.vetrov.criminalintent.crime_id";
     public static final String EXTRA_SUBTITLE =
             "com.igor.vetrov.criminalintent.subtitle_visible";
-
-    public static final int DELETE_CRIME_CODE = 30;
+    public static final int RESULT_CHANGE_TITLE = 7;
 
     private Crime mCrime;
     private EditText mTitleField;
@@ -45,6 +44,9 @@ public class CrimeFragment extends Fragment {
     private Button mTimeButton;
     private CheckBox mSolvedCheckBox;
     private boolean mSubtitleVisible;
+
+    private String titleBefore;
+    private String titleAfter;
 
     public static CrimeFragment newInstance(UUID crimeId, boolean subtitleVisible) {
         Bundle args = new Bundle();
@@ -74,15 +76,25 @@ public class CrimeFragment extends Fragment {
         mTitleField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence c, int start, int count, int after) {
-                // Здесь намеренно оставлено пустое место
-                 }
+                titleBefore = c.toString();
+            }
+
             @Override
             public void onTextChanged(CharSequence c, int start, int before, int count) {
                 mCrime.setTitle(c.toString());            }
+
             @Override
             public void afterTextChanged(Editable c) {
-                // И здесь тоже
-                 }
+                titleAfter = c.toString();
+                if (!titleBefore.equals(titleAfter)) {
+                    mCrime.setTitle(titleAfter);
+                    CrimeLab.get(getActivity()).changeCrime(mCrime);
+                    Intent intent = new Intent(getActivity(), CrimeListActivity.class);
+                    getActivity().setResult(RESULT_CHANGE_TITLE, intent);
+                } else {
+                    return;
+                }
+            }
         });
 
         mDateButton = (Button)v.findViewById(R.id.crime_date);
