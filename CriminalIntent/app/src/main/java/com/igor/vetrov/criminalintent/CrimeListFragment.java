@@ -230,13 +230,16 @@ public class CrimeListFragment extends Fragment {
             if (resultCode == 0) {
                 mEditCrimeDate = null;
                 return;
-            }
-            mEditCrimeDate = (Date) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_DATE);
-            mEditCrimeId = (UUID) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
-            mSubtitleVisible = (boolean) data.getSerializableExtra(CrimeFragment.EXTRA_SUBTITLE);
-            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
+            } else if (resultCode == CrimeFragment.RESULT_CHANGE_TITLE) {
+                updateUI();
+            } else {
+                mEditCrimeDate = (Date) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_DATE);
+                mEditCrimeId = (UUID) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
+                mSubtitleVisible = (boolean) data.getSerializableExtra(CrimeFragment.EXTRA_SUBTITLE);
+                DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
 //            String stringDateFormat = dateFormat.format(mEditCrimeDate);
 //            Toast.makeText(getActivity(), String.format("Изменена дата на:\n%s!", stringDateFormat), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
