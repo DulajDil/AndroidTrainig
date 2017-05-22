@@ -101,12 +101,12 @@ public class CrimeLab {
 
     public int getPosition(UUID id) {
         int index = -1;
-//        for (Crime crime: mCrimes) {
-//            index++;
-//            if (crime.getId().equals(id)) {
-//                return index;
-//            }
-//        }
+        for (Crime crime: getCrimes()) {
+            index++;
+            if (crime.getId().equals(id)) {
+                return index;
+            }
+        }
         return index;
     }
 

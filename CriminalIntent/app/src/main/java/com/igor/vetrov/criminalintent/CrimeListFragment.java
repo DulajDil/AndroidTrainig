@@ -55,11 +55,7 @@ public class CrimeListFragment extends Fragment {
         return crimes;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        List<Crime> crimes = getCrimes();
-        View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
-        mAddCrime = (Button) view.findViewById(R.id.add_crime);
+    private void showAddCrimeButton(List<Crime> crimes) {
         if (crimes.size() > 0) {
             mAddCrime.setVisibility(View.GONE);
         } else {
@@ -71,6 +67,14 @@ public class CrimeListFragment extends Fragment {
                 startActivity(intent);
             });
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        List<Crime> crimes = getCrimes();
+        View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
+        mAddCrime = (Button) view.findViewById(R.id.add_crime);
+        showAddCrimeButton(crimes);
         mCrimeRecyclerView = (RecyclerView) view.findViewById(R.id.crime_recycler_view);
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (savedInstanceState != null) {
@@ -146,6 +150,7 @@ public class CrimeListFragment extends Fragment {
             mAdapter.notifyItemChanged(position);
         }
         updateSubtitle();
+        showAddCrimeButton(crimes);
     }
 
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -231,7 +236,7 @@ public class CrimeListFragment extends Fragment {
                 mEditCrimeDate = null;
                 return;
             } else if (resultCode == CrimeFragment.RESULT_CHANGE_TITLE) {
-                updateUI();
+                position = (int) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_POSITION);
             } else {
                 mEditCrimeDate = (Date) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_DATE);
                 mEditCrimeId = (UUID) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);

@@ -36,6 +36,8 @@ public class CrimeFragment extends Fragment {
             "com.igor.vetrov.criminalintent.crime_id";
     public static final String EXTRA_SUBTITLE =
             "com.igor.vetrov.criminalintent.subtitle_visible";
+    public static final String EXTRA_CRIME_POSITION =
+            "com.igor.vetrov.criminalintent.crime_position";
     public static final int RESULT_CHANGE_TITLE = 7;
 
     private Crime mCrime;
@@ -47,6 +49,7 @@ public class CrimeFragment extends Fragment {
 
     private String titleBefore;
     private String titleAfter;
+    private int position;
 
     public static CrimeFragment newInstance(UUID crimeId, boolean subtitleVisible) {
         Bundle args = new Bundle();
@@ -89,7 +92,9 @@ public class CrimeFragment extends Fragment {
                 if (!titleBefore.equals(titleAfter)) {
                     mCrime.setTitle(titleAfter);
                     CrimeLab.get(getActivity()).changeCrime(mCrime);
+                    position = CrimeLab.get(getActivity()).getPosition(mCrime.getId());
                     Intent intent = new Intent(getActivity(), CrimeListActivity.class);
+                    intent.putExtra(EXTRA_CRIME_POSITION, position);
                     getActivity().setResult(RESULT_CHANGE_TITLE, intent);
                 } else {
                     return;
