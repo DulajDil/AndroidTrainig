@@ -13,6 +13,7 @@ public class Crime {
     private Date mDate;
     private String mTime;
     private boolean mSolved;
+    private String mSuspect;
     private String mStringDateFormat;
 
     public static String gettingTime(Date date) {
@@ -56,6 +57,14 @@ public class Crime {
 
     public boolean isSolved() {
         return mSolved;
+    }
+
+    public String getSuspect() {
+        return mSuspect;
+    }
+
+    public void setSuspect(String suspect) {
+        mSuspect = suspect;
     }
 
     public String getTime() {

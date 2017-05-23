@@ -13,6 +13,15 @@
     <string name="show_subtitle">Показать Заголовок</string>
     <string name="hide_subtitle">Скрыть Заголовок</string>
     <string name="subtitle_format">%1$s преступлений</string>
+    <string name="crime_suspect_text">Выбрать подозреваемого</string>
+    <string name="crime_report_text">Отправить отчет о преступлении</string>
+    <string name="crime_report">%1$s!
+        Преступление было обнаружено на %2$s. %3$s, и %4$s  </string>
+    <string name="crime_report_solved">Дело раскрыто</string>
+    <string name="crime_report_unsolved">Дело не раскрыто</string>
+    <string name="crime_report_no_suspect">нет подозреваемого.</string>
+    <string name="crime_report_suspect">подозреваемый %s.</string>
+    <string name="crime_report_subject">Преступный замысел: Отчет о Преступлении</string>
     <plurals name="subtitle_plural">
         <item quantity="one">%1$s преступление</item>
         <item quantity="other">%1$s преступлений</item>
