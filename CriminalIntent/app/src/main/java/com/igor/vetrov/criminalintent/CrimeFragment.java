@@ -45,6 +45,7 @@ public class CrimeFragment extends Fragment {
     private Button mDateButton;
     private Button mTimeButton;
     private CheckBox mSolvedCheckBox;
+    private Button mReportButton;
     private boolean mSubtitleVisible;
 
     private String titleBefore;
@@ -139,6 +140,15 @@ public class CrimeFragment extends Fragment {
                 // Назначение флага раскрытия преступления
                  mCrime.setSolved(isChecked);
             }
+        });
+        mReportButton = (Button) v.findViewById(R.id.crime_report);
+        mReportButton.setOnClickListener(v1 -> {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("text/plain");
+            i.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
+            i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_subject));
+            i = Intent.createChooser(i, getString(R.string.send_report));
+            startActivity(i);
         });
         return v;
     }

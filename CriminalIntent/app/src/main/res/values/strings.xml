@@ -22,6 +22,7 @@
     <string name="crime_report_no_suspect">нет подозреваемого.</string>
     <string name="crime_report_suspect">подозреваемый %s.</string>
     <string name="crime_report_subject">Преступный замысел: Отчет о Преступлении</string>
+    <string name="send_report"> </string>
     <plurals name="subtitle_plural">
         <item quantity="one">%1$s преступление</item>
         <item quantity="other">%1$s преступлений</item>
