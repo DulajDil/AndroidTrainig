@@ -3,6 +3,9 @@ package com.igor.vetrov.criminalintent;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
@@ -40,7 +43,7 @@ public class CrimeFragment extends Fragment {
     public static final String EXTRA_CRIME_POSITION =
             "com.igor.vetrov.criminalintent.crime_position";
     public static final int RESULT_CHANGE_TITLE = 7;
-    private static final int REQUEST_CONTACT = 1;
+    private static final int REQUEST_CONTACT = 9;
 
     private Crime mCrime;
     private EditText mTitleField;
@@ -144,6 +147,7 @@ public class CrimeFragment extends Fragment {
                  mCrime.setSolved(isChecked);
             }
         });
+
         mReportButton = (Button) v.findViewById(R.id.crime_report);
         mReportButton.setOnClickListener(v1 -> {
             Intent i = new Intent(Intent.ACTION_SEND);
@@ -153,6 +157,7 @@ public class CrimeFragment extends Fragment {
             i = Intent.createChooser(i, getString(R.string.send_report));
             startActivity(i);
         });
+
         final Intent pickContact = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         mSuspectButton = (Button) v.findViewById(R.id.crime_suspect);
         mSuspectButton.setOnClickListener(v1 -> {
@@ -160,6 +165,12 @@ public class CrimeFragment extends Fragment {
         });
         if (mCrime.getSuspect() != null) {
             mSolvedCheckBox.setText(mCrime.getSuspect());
+        }
+
+        PackageManager packageManager = getActivity().getPackageManager();
+        if (packageManager.resolveActivity(pickContact,
+                packageManager.MATCH_DEFAULT_ONLY) == null) {
+            mSuspectButton.setEnabled(false);
         }
         return v;
     }
@@ -208,6 +219,30 @@ public class CrimeFragment extends Fragment {
             mCrime.setDate(date);
             updateTime();
             returnResult(date, mCrime.getId());
+        } else if (requestCode == REQUEST_CONTACT && data != null) {
+            Uri contactUri = data.getData();
+            // Определение полей, значения которых должны быть
+            // возвращены запросом.
+            String[] queryFields = new String[]{
+                    ContactsContract.Contacts.DISPLAY_NAME
+            };
+            // Выполнение запроса - contactUri здесь выполняет функции
+            // условия "where"
+            Cursor c = getActivity().getContentResolver().query(contactUri, queryFields, null, null, null);
+            try {
+                // Проверка получения результатов
+                if (c.getCount() == 0) {
+                    return;
+                }
+                // Извлечение первого столбца данных - имени подозреваемого.
+                c.moveToFirst();
+                String suspect = c.getString(0);
+                mCrime.setSuspect(suspect);
+                mSuspectButton.setText(suspect);
+            } finally {{
+                c.close();
+            }
+        }
         }
     }
 
