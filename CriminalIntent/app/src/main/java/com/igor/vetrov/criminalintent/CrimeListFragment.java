@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -177,6 +178,12 @@ public class CrimeListFragment extends Fragment {
             mDateTextView.setText(mCrime.getStringDateFormat());
             mTimeTextView.setText(mCrime.getTime());
             mSolvedCheckBox.setChecked(mCrime.isSolved());
+            mSolvedCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                // Назначение флага раскрытия преступления
+                mCrime.setSolved(isChecked);
+                CrimeLab crimeLab = CrimeLab.get(getActivity());
+                crimeLab.updateCrime(mCrime);
+            });
         }
 
         @Override
@@ -241,7 +248,7 @@ public class CrimeListFragment extends Fragment {
                 mEditCrimeDate = (Date) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_DATE);
                 mEditCrimeId = (UUID) data.getSerializableExtra(CrimeFragment.EXTRA_CRIME_ID);
                 mSubtitleVisible = (boolean) data.getSerializableExtra(CrimeFragment.EXTRA_SUBTITLE);
-                DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
+//                DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
 //            String stringDateFormat = dateFormat.format(mEditCrimeDate);
 //            Toast.makeText(getActivity(), String.format("Изменена дата на:\n%s!", stringDateFormat), Toast.LENGTH_SHORT).show();
             }
