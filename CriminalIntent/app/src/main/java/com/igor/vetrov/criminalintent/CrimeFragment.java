@@ -45,6 +45,7 @@ public class CrimeFragment extends Fragment {
             "com.igor.vetrov.criminalintent.crime_position";
     public static final int RESULT_CHANGE_TITLE = 7;
     private static final int REQUEST_CONTACT = 9;
+    private static final int REQUEST_CONTACT_CALL = 11;
 
     private Crime mCrime;
     private EditText mTitleField;
@@ -53,10 +54,12 @@ public class CrimeFragment extends Fragment {
     private CheckBox mSolvedCheckBox;
     private Button mReportButton;
     private Button mSuspectButton;
+    private Button mCallButton;
     private boolean mSubtitleVisible;
 
     private String titleBefore;
     private String titleAfter;
+    private String phoneNumber;
     private int position;
 
     public static CrimeFragment newInstance(UUID crimeId, boolean subtitleVisible) {
@@ -181,6 +184,13 @@ public class CrimeFragment extends Fragment {
                 packageManager.MATCH_DEFAULT_ONLY) == null) {
             mSuspectButton.setEnabled(false);
         }
+
+//        Uri call = Uri.parse("tel: 79152794565");
+        final Intent pickContact2 = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        mCallButton = (Button) v.findViewById(R.id.crime_call);
+        mCallButton.setOnClickListener(v1 -> {
+            startActivityForResult(pickContact2, REQUEST_CONTACT_CALL);
+        });
         return v;
     }
 
@@ -248,10 +258,24 @@ public class CrimeFragment extends Fragment {
                 String suspect = c.getString(0);
                 mCrime.setSuspect(suspect);
                 mSuspectButton.setText(suspect);
-            } finally {{
+            } finally {
                 c.close();
             }
-        }
+        } else if (requestCode == REQUEST_CONTACT_CALL && data != null) {
+            Uri contactUri = data.getData();
+            String[] queryFields = new String[]{
+                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
+            };
+            Cursor phone = getActivity().getContentResolver().query(contactUri, queryFields, null, null, null);
+            try {
+                if (phone.getCount() == 0) {
+                    return;
+                }
+                phone.moveToFirst();
+                phoneNumber = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            } finally {
+                phone.close();
+            }
         }
     }
 
