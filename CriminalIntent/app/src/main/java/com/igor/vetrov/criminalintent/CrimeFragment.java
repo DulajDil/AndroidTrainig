@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ShareCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +29,8 @@ import android.widget.Toast;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.UUID;
+
+import static android.content.ContentValues.TAG;
 
 public class CrimeFragment extends Fragment {
 
@@ -60,6 +63,7 @@ public class CrimeFragment extends Fragment {
     private String titleBefore;
     private String titleAfter;
     private String phoneNumber;
+    private String phoneID;
     private int position;
 
     public static CrimeFragment newInstance(UUID crimeId, boolean subtitleVisible) {
@@ -239,43 +243,83 @@ public class CrimeFragment extends Fragment {
             updateTime();
             returnResult(date, mCrime.getId());
         } else if (requestCode == REQUEST_CONTACT && data != null) {
-            Uri contactUri = data.getData();
-            // Определение полей, значения которых должны быть
-            // возвращены запросом.
-            String[] queryFields = new String[]{
-                    ContactsContract.Contacts.DISPLAY_NAME
-            };
-            // Выполнение запроса - contactUri здесь выполняет функции
-            // условия "where"
-            Cursor c = getActivity().getContentResolver().query(contactUri, queryFields, null, null, null);
-            try {
-                // Проверка получения результатов
-                if (c.getCount() == 0) {
-                    return;
-                }
-                // Извлечение первого столбца данных - имени подозреваемого.
-                c.moveToFirst();
-                String suspect = c.getString(0);
-                mCrime.setSuspect(suspect);
-                mSuspectButton.setText(suspect);
-            } finally {
-                c.close();
-            }
+            getContactName(data);
         } else if (requestCode == REQUEST_CONTACT_CALL && data != null) {
-            Uri contactUri = data.getData();
-            String[] queryFields = new String[]{
-                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
-            };
-            Cursor phone = getActivity().getContentResolver().query(contactUri, queryFields, null, null, null);
-            try {
-                if (phone.getCount() == 0) {
-                    return;
-                }
-                phone.moveToFirst();
-                phoneNumber = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            } finally {
-                phone.close();
+            getContactInfo(data);
+        }
+    }
+
+    private void getContactName(Intent intent) {
+        Uri contactUri = intent.getData();
+        // Определение полей, значения которых должны быть
+        // возвращены запросом.
+        String[] queryFields = new String[]{
+                ContactsContract.Contacts.DISPLAY_NAME
+        };
+        // Выполнение запроса - contactUri здесь выполняет функции
+        // условия "where"
+        Cursor c = getActivity().getContentResolver().query(contactUri, queryFields, null, null, null);
+        try {
+            // Проверка получения результатов
+            if (c.getCount() == 0) {
+                return;
             }
+            // Извлечение первого столбца данных - имени подозреваемого.
+            c.moveToFirst();
+            String suspect = c.getString(0);
+            mCrime.setSuspect(suspect);
+            mSuspectButton.setText(suspect);
+        } finally {
+            c.close();
+        }
+    }
+
+    private void getContactInfo(Intent intent) {
+        Uri contactUri = intent.getData();
+        String[] queryFields = new String[]{ContactsContract.Contacts.HAS_PHONE_NUMBER};
+        Cursor cursorID = getActivity().getContentResolver().query(contactUri, queryFields
+                , null, null, null);
+        try {
+            if (cursorID.getCount() == 0) {
+                return;
+            }
+            cursorID.moveToFirst();
+            phoneID = cursorID.getString(0);
+        } finally {
+            cursorID.close();
+        }
+        Log.d(TAG, "Contact ID: " + phoneID);
+
+        String[] queryFields2 = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
+
+        Cursor cursorPhone = getActivity().getContentResolver().query
+                        ( ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+                        , null
+                        , null
+                        , null
+                        , null );
+
+//        Cursor cursorPhone = getActivity().getContentResolver().query
+//                ( ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+//                , queryFields2
+//                , null
+//                , new String[]{phoneID}
+//                , null );
+        if(cursorPhone.moveToNext()) {
+            String name = cursorPhone.getString(cursorPhone.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+            phoneNumber = cursorPhone.getString(cursorPhone.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
+        }
+
+
+
+        try {
+            if (cursorPhone.getCount() == 0) {
+                return;
+            }
+            cursorPhone.moveToFirst();
+            phoneNumber = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+        } finally {
+            cursorPhone.close();
         }
     }
 
