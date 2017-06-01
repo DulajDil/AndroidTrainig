@@ -276,7 +276,7 @@ public class CrimeFragment extends Fragment {
 
     private void getContactInfo(Intent intent) {
         Uri contactUri = intent.getData();
-        String[] queryFields = new String[]{ContactsContract.Contacts.HAS_PHONE_NUMBER};
+        String[] queryFields = new String[]{ContactsContract.Contacts._ID};
         Cursor cursorID = getActivity().getContentResolver().query(contactUri, queryFields
                 , null, null, null);
         try {
@@ -294,33 +294,29 @@ public class CrimeFragment extends Fragment {
 
         Cursor cursorPhone = getActivity().getContentResolver().query
                         ( ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-                        , null
-                        , null
+                        , queryFields2
+                        , ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ phoneID
                         , null
                         , null );
-
-//        Cursor cursorPhone = getActivity().getContentResolver().query
-//                ( ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-//                , queryFields2
-//                , null
-//                , new String[]{phoneID}
-//                , null );
-        if(cursorPhone.moveToNext()) {
-            String name = cursorPhone.getString(cursorPhone.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
-            phoneNumber = cursorPhone.getString(cursorPhone.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
-        }
-
-
 
         try {
             if (cursorPhone.getCount() == 0) {
                 return;
             }
             cursorPhone.moveToFirst();
-            phoneNumber = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            phoneNumber = cursorPhone.getString(0);
         } finally {
             cursorPhone.close();
         }
+//        Cursor cursorPhone = getActivity().getContentResolver().query
+//                ( ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+//                , queryFields2
+//                , null
+//                , new String[]{phoneID}
+//                , null );
+//        if(cursorPhone.moveToNext()) {
+//            phoneNumber = cursorPhone.getString(cursorPhone.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
+//        }
     }
 
     public void returnResult(Date date, UUID id) {

@@ -3,6 +3,7 @@
     package="com.igor.vetrov.criminalintent" >
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission-sdk-23 android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
