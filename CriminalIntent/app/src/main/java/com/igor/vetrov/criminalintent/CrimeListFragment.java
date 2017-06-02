@@ -90,13 +90,12 @@ public class CrimeListFragment extends Fragment {
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[],
                                            @NonNull int[] grantResults) {
-        // Make sure it's our original READ_CONTACTS request
         if (requestCode == READ_CONTACTS_PERMISSIONS_REQUEST) {
             if (grantResults.length == 1 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getActivity(), "Read Contacts permission granted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Чтение контактов разрешено", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getActivity(), "Read Contacts permission denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "В чтении контактов отказано", Toast.LENGTH_SHORT).show();
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);

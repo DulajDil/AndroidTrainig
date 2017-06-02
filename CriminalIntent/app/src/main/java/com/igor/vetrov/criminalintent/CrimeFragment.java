@@ -189,7 +189,6 @@ public class CrimeFragment extends Fragment {
             mSuspectButton.setEnabled(false);
         }
 
-//        Uri call = Uri.parse("tel: 79152794565");
         final Intent pickContact2 = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         mCallButton = (Button) v.findViewById(R.id.crime_call);
         mCallButton.setOnClickListener(v1 -> {
@@ -276,11 +275,18 @@ public class CrimeFragment extends Fragment {
 
     private void getContactInfo(Intent intent) {
         Uri contactUri = intent.getData();
+        getPhoneIdUserContacts(contactUri);
+        getPhoneNumberUserContacts();
+        callPhoneNumber();
+    }
+
+    public void getPhoneIdUserContacts(Uri contactUri) {
         String[] queryFields = new String[]{ContactsContract.Contacts._ID};
         Cursor cursorID = getActivity().getContentResolver().query(contactUri, queryFields
                 , null, null, null);
         try {
             if (cursorID.getCount() == 0) {
+                Log.d(TAG, "Cursor Contact Phone ID: null");
                 return;
             }
             cursorID.moveToFirst();
@@ -289,11 +295,12 @@ public class CrimeFragment extends Fragment {
             cursorID.close();
         }
         Log.d(TAG, "Contact ID: " + phoneID);
+    }
 
+    public void getPhoneNumberUserContacts() {
         String[] queryFields2 = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
-
         Cursor cursorPhone = getActivity().getContentResolver().query
-                        ( ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+                ( ContactsContract.CommonDataKinds.Phone.CONTENT_URI
                         , queryFields2
                         , ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ phoneID
                         , null
@@ -301,6 +308,7 @@ public class CrimeFragment extends Fragment {
 
         try {
             if (cursorPhone.getCount() == 0) {
+                Log.d(TAG, "Cursor Contact Phone Number: null");
                 return;
             }
             cursorPhone.moveToFirst();
@@ -308,15 +316,13 @@ public class CrimeFragment extends Fragment {
         } finally {
             cursorPhone.close();
         }
-//        Cursor cursorPhone = getActivity().getContentResolver().query
-//                ( ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-//                , queryFields2
-//                , null
-//                , new String[]{phoneID}
-//                , null );
-//        if(cursorPhone.moveToNext()) {
-//            phoneNumber = cursorPhone.getString(cursorPhone.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//        }
+        Log.d(TAG, "Contact Phone: " + phoneNumber);
+    }
+
+    public void callPhoneNumber() {
+        Uri call = Uri.parse("tel:" + phoneNumber);
+        Intent intent = new Intent(Intent.ACTION_DIAL, call);
+        startActivity(intent);
     }
 
     public void returnResult(Date date, UUID id) {
