@@ -1,19 +1,29 @@
 package com.igor.vetrov.criminalintent;
 
+import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ShareCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -32,6 +42,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -55,6 +66,8 @@ public class CrimeFragment extends Fragment {
     public static final int RESULT_CHANGE_TITLE = 7;
     private static final int REQUEST_CONTACT = 9;
     private static final int REQUEST_CONTACT_CALL = 11;
+    private static final int READ_CONTACTS_PERMISSIONS_REQUEST = 33;
+    private static final int CAMERA_PERMISSIONS_REQUEST = 34;
     private static final int  REQUEST_PHOTO = 14;
 
     private Crime mCrime;
@@ -101,6 +114,11 @@ public class CrimeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_crime, container, false);
+
+        getPermissionToCamera();
+        getPermissionToReadUserContacts();
+
+
         mTitleField = (EditText)v.findViewById(R.id.crime_title);
         mTitleField.setText(mCrime.getTitle());
         mTitleField.addTextChangedListener(new TextWatcher() {
@@ -215,13 +233,25 @@ public class CrimeFragment extends Fragment {
                 && captureImage.resolveActivity(packageManager) != null;
         mPhotoButton.setEnabled(canTakePhoto);
 
-        if (Build.VERSION.SDK_INT >= 25) {
+        if (Build.VERSION.SDK_INT >= 24) {
             if (canTakePhoto) {
-                ContentValues values = new ContentValues(1);
-                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
-                Uri uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                try{
+                    Method m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+                    m.invoke(null);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                Uri uri = Uri.fromFile(mPhotoFile);
                 captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                captureImage.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//                Uri photoUri = FileProvider.getUriForFile(getActivity().getApplicationContext()
+//                        , getActivity().getApplicationContext().getPackageName() + ".provider", new File(mPhotoFile.getPath()));
+//                captureImage.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+//                ContentValues values = new ContentValues();
+//                values.put(MediaStore.Images.Media.TITLE, "Odoo Mobile Attachment");
+//                values.put(MediaStore.Images.Media.DESCRIPTION,
+//                        "Captured from Odoo Mobile App");
+//                Uri uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//                captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             }
             mPhotoButton.setOnClickListener(v12 -> {
                 Toast.makeText(getActivity(), "Версия Андроид выше 7", Toast.LENGTH_SHORT).show();
@@ -267,6 +297,29 @@ public class CrimeFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        if (requestCode == READ_CONTACTS_PERMISSIONS_REQUEST) {
+            if (grantResults.length == 1 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getActivity(), "Чтение контактов разрешено", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity(), "В чтении контактов отказано", Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == CAMERA_PERMISSIONS_REQUEST) {
+            if (grantResults.length == 1 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getActivity(), "Разрешена работа с камерой", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity(), "Работа с камерой запрещена", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
+        }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -408,5 +461,55 @@ public class CrimeFragment extends Fragment {
 
     private void updateTime() {
         mTimeButton.setText(mCrime.getTime());
+    }
+
+    public void getPermissionToReadUserContacts() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (shouldShowRequestPermissionRationale(
+                    Manifest.permission.READ_CONTACTS)) {
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Взаимодействие с контактами!")
+                    .setMessage("Для продолжения работы, требуется разрешение КОНТАКТОВ!")
+                    .setCancelable(true)
+                    .setPositiveButton("OK", (dialog, id) -> {
+                        if (Build.VERSION.SDK_INT >= 24) {
+                            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
+                                    READ_CONTACTS_PERMISSIONS_REQUEST);
+                        }
+                    }).setNegativeButton("ОТМЕНА", (dialog, id) -> {
+                        getActivity().finish();
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+
+        }
+    }
+
+    public void getPermissionToCamera() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (shouldShowRequestPermissionRationale(
+                    Manifest.permission.CAMERA)) {
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Взаимодействие с камерой!")
+                    .setMessage("Для продолжения работы, требуется разрешение КАМЕРЫ!")
+                    .setCancelable(true)
+                    .setPositiveButton("OK", (dialog, id) -> {
+                        if (Build.VERSION.SDK_INT >= 24) {
+                            requestPermissions(new String[]{Manifest.permission.CAMERA},
+                                    CAMERA_PERMISSIONS_REQUEST);
+                        }
+                    }).setNegativeButton("ОТМЕНА", (dialog, id) -> {
+                        getActivity().finish();
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 }
