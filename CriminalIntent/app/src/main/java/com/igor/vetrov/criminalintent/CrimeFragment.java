@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -269,6 +270,7 @@ public class CrimeFragment extends Fragment {
         }
 
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
+        updatePhotoView();
         return v;
     }
 
@@ -316,10 +318,12 @@ public class CrimeFragment extends Fragment {
             } else {
                 Toast.makeText(getActivity(), "Работа с камерой запрещена", Toast.LENGTH_SHORT).show();
             }
+        } else if (requestCode == REQUEST_PHOTO) {
+            updatePhotoView();
         } else {
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-            }
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -510,6 +514,15 @@ public class CrimeFragment extends Fragment {
                     });
             AlertDialog alert = builder.create();
             alert.show();
+        }
+    }
+
+    private void updatePhotoView() {
+        if (mPhotoFile == null || !mPhotoFile.exists()) {
+            mPhotoView.setImageDrawable(null);
+        } else {
+            Bitmap bitmap = PicturesUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+            mPhotoView.setImageBitmap(bitmap);
         }
     }
 }
