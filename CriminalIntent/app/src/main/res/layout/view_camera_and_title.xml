@@ -26,7 +26,15 @@
             android:orientation="vertical"
             android:layout_marginRight="4dp">
 
-            <ImageView
+            <!--<ImageView-->
+                <!--android:id="@+id/crime_photo"-->
+                <!--android:layout_width="80dp"-->
+                <!--android:layout_height="80dp"-->
+                <!--android:scaleType="centerInside"-->
+                <!--android:background="@android:color/darker_gray"-->
+                <!--android:cropToPadding="true"/>-->
+
+            <ImageButton
                 android:id="@+id/crime_photo"
                 android:layout_width="80dp"
                 android:layout_height="80dp"

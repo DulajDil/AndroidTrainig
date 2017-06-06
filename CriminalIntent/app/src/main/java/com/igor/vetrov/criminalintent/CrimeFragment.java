@@ -19,6 +19,7 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ShareCompat;
@@ -41,6 +42,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.igor.vetrov.criminalintent.future.PhotoMiniaturFragment;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -81,7 +84,8 @@ public class CrimeFragment extends Fragment {
     private Button mSuspectButton;
     private Button mCallButton;
     private ImageButton mPhotoButton;
-    private ImageView mPhotoView;
+//    private ImageView mPhotoView;
+    private ImageButton mPhotoView;
     private boolean mSubtitleVisible;
 
     private String titleBefore;
@@ -269,8 +273,13 @@ public class CrimeFragment extends Fragment {
             });
         }
 
-        mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
+        mPhotoView = (ImageButton) v.findViewById(R.id.crime_photo);
         updatePhotoView();
+        mPhotoView.setOnClickListener(v1 -> {
+            FragmentManager manager = getFragmentManager();
+            PhotoMiniaturFragment photoMiniaturFragment = PhotoMiniaturFragment.newInstance(mCrime.getId());
+            photoMiniaturFragment.show(manager, "Max Miniature");
+        });
         return v;
     }
 
@@ -318,8 +327,6 @@ public class CrimeFragment extends Fragment {
             } else {
                 Toast.makeText(getActivity(), "Работа с камерой запрещена", Toast.LENGTH_SHORT).show();
             }
-        } else if (requestCode == REQUEST_PHOTO) {
-            updatePhotoView();
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
@@ -347,6 +354,8 @@ public class CrimeFragment extends Fragment {
             getContactName(data);
         } else if (requestCode == REQUEST_CONTACT_CALL && data != null) {
             getContactInfo(data);
+        } else if (requestCode == REQUEST_PHOTO) {
+            updatePhotoView();
         }
     }
 
