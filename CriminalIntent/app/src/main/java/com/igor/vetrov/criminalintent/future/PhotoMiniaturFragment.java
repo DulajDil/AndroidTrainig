@@ -3,11 +3,13 @@ package com.igor.vetrov.criminalintent.future;
 
 import android.app.Dialog;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.igor.vetrov.criminalintent.Crime;
@@ -42,10 +44,17 @@ public class PhotoMiniaturFragment extends DialogFragment {
         mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_photo, null);
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo_miniature);
+        ViewTreeObserver viewTreeObserver = mPhotoView.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+            }
+        });
         updatePhotoView();
         return new AlertDialog.Builder(getActivity())
                 .setView(v)
-                .setTitle("Миниатюрара аватарки")
+//                .setTitle("Миниатюрара аватарки")
                 .create();
     }
 
@@ -53,6 +62,7 @@ public class PhotoMiniaturFragment extends DialogFragment {
         if (mPhotoFile == null || !mPhotoFile.exists()) {
             mPhotoView.setImageDrawable(null);
         } else {
+//            Bitmap bitmap = BitmapFactory.decodeFile(mPhotoFile.getPath(), null);
             Bitmap bitmap = PicturesUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
             mPhotoView.setImageBitmap(bitmap);
         }

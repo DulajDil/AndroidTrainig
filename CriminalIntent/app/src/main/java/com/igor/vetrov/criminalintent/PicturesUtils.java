@@ -3,6 +3,7 @@ package com.igor.vetrov.criminalintent;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Point;
 
 public class PicturesUtils {
@@ -39,5 +40,22 @@ public class PicturesUtils {
 
         // Чтение данных и создание итогового изображения
         return BitmapFactory.decodeFile(path, options);
+    }
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+
+        Matrix matrix = new Matrix();
+
+        matrix.postScale(scaleWidth, scaleHeight);
+
+
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, true);
+        bm.recycle();
+        return resizedBitmap;
     }
 }
