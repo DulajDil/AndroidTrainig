@@ -48,10 +48,9 @@ public class PhotoMiniaturFragment extends DialogFragment {
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-
+                updatePhotoView();
             }
         });
-        updatePhotoView();
         return new AlertDialog.Builder(getActivity())
                 .setView(v)
 //                .setTitle("Миниатюрара аватарки")
