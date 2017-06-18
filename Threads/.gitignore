@@ -1,0 +1,16 @@
+.idea
+.gradle
+build
+*.log
+AppiumServerlog.txt
+testdata
+screenshot
+log
+html
+driver
+classes
+src/test/resources/testdata/
+src/test/resources/log/
+src/test/resources/screenshot/
+src/test/resources/html/
+src/test/resources/driver/
