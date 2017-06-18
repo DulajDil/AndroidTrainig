@@ -5,15 +5,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.util.Log;
 
 public class PicturesUtils {
 
     public static Bitmap getScaledBitmap(String path, Activity activity) {
         Point size = new Point();
 
-        activity.getWindowManager().getDefaultDisplay().getSize(size);
+        activity.getWindowManager().getDefaultDisplay().getSize(size);;
+        int width = size.x;
+        int height = size.y;
+        Log.i("Getting window size","Height: " + height + " Width: " + width);
 
-        return getScaledBitmap(path, size.x, size.y);
+        return getScaledBitmap(path, width, height);
     }
 
     public static Bitmap getScaledBitmap(String path, int destWidth, int destHeight) {
