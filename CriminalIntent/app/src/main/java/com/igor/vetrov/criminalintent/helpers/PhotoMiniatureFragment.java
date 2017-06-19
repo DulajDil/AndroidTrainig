@@ -1,10 +1,8 @@
-package com.igor.vetrov.criminalintent.future;
+package com.igor.vetrov.criminalintent.helpers;
 
 
 import android.app.Dialog;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -16,13 +14,12 @@ import android.widget.ImageView;
 
 import com.igor.vetrov.criminalintent.Crime;
 import com.igor.vetrov.criminalintent.CrimeLab;
-import com.igor.vetrov.criminalintent.PicturesUtils;
 import com.igor.vetrov.criminalintent.R;
 
 import java.io.File;
 import java.util.UUID;
 
-public class PhotoMiniaturFragment extends DialogFragment {
+public class PhotoMiniatureFragment extends DialogFragment {
 
     public static final String ARG_PHOTO = "photo";
 
@@ -32,11 +29,11 @@ public class PhotoMiniaturFragment extends DialogFragment {
     public int width;
     public int height;
 
-    public static PhotoMiniaturFragment newInstance(UUID id) {
+    public static PhotoMiniatureFragment newInstance(UUID id) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_PHOTO, id);
 
-        PhotoMiniaturFragment fragment = new PhotoMiniaturFragment();
+        PhotoMiniatureFragment fragment = new PhotoMiniatureFragment();
         fragment.setArguments(args);
         return fragment;
     }

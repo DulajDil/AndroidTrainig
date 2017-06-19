@@ -35,7 +35,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.igor.vetrov.criminalintent.future.PhotoMiniaturFragment;
+import com.igor.vetrov.criminalintent.helpers.PhotoMiniatureFragment;
+import com.igor.vetrov.criminalintent.helpers.PicturesUtils;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -269,8 +270,8 @@ public class CrimeFragment extends Fragment {
         updatePhotoView();
         mPhotoView.setOnClickListener(v1 -> {
             FragmentManager manager = getFragmentManager();
-            PhotoMiniaturFragment photoMiniaturFragment = PhotoMiniaturFragment.newInstance(mCrime.getId());
-            photoMiniaturFragment.show(manager, "Max Miniature");
+            PhotoMiniatureFragment photoMiniatureFragment = PhotoMiniatureFragment.newInstance(mCrime.getId());
+            photoMiniatureFragment.show(manager, "Max Miniature");
         });
         return v;
     }

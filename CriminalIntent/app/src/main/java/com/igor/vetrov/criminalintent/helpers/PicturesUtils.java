@@ -1,4 +1,4 @@
-package com.igor.vetrov.criminalintent;
+package com.igor.vetrov.criminalintent.helpers;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
