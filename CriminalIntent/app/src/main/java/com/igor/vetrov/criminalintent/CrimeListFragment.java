@@ -41,7 +41,7 @@ public class CrimeListFragment extends Fragment {
      * Обязательный интерфейс для активности-хоста.
      */
     public interface Callbacks {
-        void onCrimeSelected(Crime crime);
+        void onCrimeSelected(Crime crime, boolean mSubtitleVisible);
     }
 
     @Override
@@ -127,8 +127,10 @@ public class CrimeListFragment extends Fragment {
             case R.id.menu_item_new_crime:
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).addCrime(crime);
-                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId(), mSubtitleVisible);
-                startActivity(intent);
+//                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId(), mSubtitleVisible);
+//                startActivity(intent);
+                updateUI();
+                mCallbacks.onCrimeSelected(crime, mSubtitleVisible);
                 return true;
             case R.id.menu_item_show_subtitle:
                 mSubtitleVisible = !mSubtitleVisible;
@@ -157,7 +159,7 @@ public class CrimeListFragment extends Fragment {
         activity.getSupportActionBar().setSubtitle(subtitle);
     }
 
-    private void updateUI() {
+    public void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
 
@@ -210,9 +212,10 @@ public class CrimeListFragment extends Fragment {
 //            Intent intent = new Intent(getActivity(), CrimeActivity.class);
 //            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
 
-            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId(), mSubtitleVisible);
+//            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId(), mSubtitleVisible);
             position = CrimeLab.get(getActivity()).getPosition(mCrime.getId());
-            startActivityForResult(intent, REQUEST_CRIME);
+//            startActivityForResult(intent, REQUEST_CRIME);
+            mCallbacks.onCrimeSelected(mCrime, mSubtitleVisible);
         }
     }
 

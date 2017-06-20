@@ -2,6 +2,7 @@ package com.igor.vetrov.criminalintent;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -80,6 +81,7 @@ public class CrimeFragment extends Fragment {
 //    private ImageView mPhotoView;
     private ImageButton mPhotoView;
     private boolean mSubtitleVisible;
+    private Callbacks mCallbacks;
 
     private String titleBefore;
     private String titleAfter;
@@ -95,6 +97,19 @@ public class CrimeFragment extends Fragment {
         CrimeFragment fragment = new CrimeFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    /**
+     * Обязательный интерфейс для активности-хоста.
+     */
+    public interface Callbacks {
+        void onCrimeUpdated(Crime crime);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
     }
 
     @Override
@@ -120,6 +135,7 @@ public class CrimeFragment extends Fragment {
         mTitleField = (EditText)v.findViewById(R.id.crime_title);
         mTitleField.setText(mCrime.getTitle());
         mTitleField.addTextChangedListener(new TextWatcher() {
+
             @Override
             public void beforeTextChanged(CharSequence c, int start, int count, int after) {
                 titleBefore = c.toString();
@@ -127,7 +143,9 @@ public class CrimeFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence c, int start, int before, int count) {
-                mCrime.setTitle(c.toString());            }
+                mCrime.setTitle(c.toString());
+                updateCrime();
+            }
 
             @Override
             public void afterTextChanged(Editable c) {
@@ -181,6 +199,7 @@ public class CrimeFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Назначение флага раскрытия преступления
                  mCrime.setSolved(isChecked);
+                updateCrime();
             }
         });
 
@@ -337,19 +356,30 @@ public class CrimeFragment extends Fragment {
             Toast.makeText(getActivity(), String.format("Дата изменена на: %s", stringDateFormat), Toast.LENGTH_SHORT).show();
             mCrime.setDate(date);
             updateDate();
+            updateCrime();
             returnResult(date, mCrime.getId());
         } else if (requestCode == TimePickerFragment.TIME_REQUEST_CODE) {
             Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
             mCrime.setDate(date);
             updateTime();
+            updateCrime();
             returnResult(date, mCrime.getId());
         } else if (requestCode == REQUEST_CONTACT && data != null) {
             getContactName(data);
+            updateCrime();
         } else if (requestCode == REQUEST_CONTACT_CALL && data != null) {
             getContactInfo(data);
+            updateCrime();
         } else if (requestCode == REQUEST_PHOTO) {
             updatePhotoView();
+            updateCrime();
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
     }
 
     private void getContactName(Intent intent) {
@@ -539,5 +569,10 @@ public class CrimeFragment extends Fragment {
                 mPhotoView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
+    }
+
+    private void updateCrime() {
+        CrimeLab.get(getActivity()).updateCrime(mCrime);
+        mCallbacks.onCrimeUpdated(mCrime);
     }
 }

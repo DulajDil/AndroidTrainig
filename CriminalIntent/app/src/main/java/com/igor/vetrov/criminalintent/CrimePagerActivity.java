@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
-public class CrimePagerActivity extends AppCompatActivity {
+public class CrimePagerActivity extends AppCompatActivity implements CrimeFragment.Callbacks{
 
     private static final String EXTRA_CRIME_ID = "com.igor.vetrov.criminalintent.crime_id";
 
@@ -68,5 +68,10 @@ public class CrimePagerActivity extends AppCompatActivity {
         Intent intent = super.getParentActivityIntent();
         intent.putExtra(CrimeFragment.EXTRA_SUBTITLE, mSubtitleVisible);
         return intent;
+    }
+
+    @Override
+    public void onCrimeUpdated(Crime crime) {
+
     }
 }
