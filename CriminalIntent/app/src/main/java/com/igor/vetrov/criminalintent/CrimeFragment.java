@@ -128,8 +128,11 @@ public class CrimeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_crime, container, false);
 
-        getPermissionToCamera();
-        getPermissionToReadUserContacts();
+//        getPermissionToCamera();
+//        getPermissionToReadUserContacts();
+//        getPermissionToReadUserContactsWithoutAlert();
+//        getPermissionToCameraWithoutAlert();
+        getMultiPermission();
 
 
         mTitleField = (EditText)v.findViewById(R.id.crime_title);
@@ -382,6 +385,9 @@ public class CrimeFragment extends Fragment {
         mCallbacks = null;
     }
 
+    /**
+     *
+     */
     private void getContactName(Intent intent) {
         Uri contactUri = intent.getData();
         // Определение полей, значения которых должны быть
@@ -407,6 +413,9 @@ public class CrimeFragment extends Fragment {
         }
     }
 
+    /**
+     *
+     */
     private void getContactInfo(Intent intent) {
         Uri contactUri = intent.getData();
         getPhoneIdUserContacts(contactUri);
@@ -414,6 +423,9 @@ public class CrimeFragment extends Fragment {
         callPhoneNumber();
     }
 
+    /**
+     *
+     */
     public void getPhoneIdUserContacts(Uri contactUri) {
         String[] queryFields = new String[]{ContactsContract.Contacts._ID};
         Cursor cursorID = getActivity().getContentResolver().query(contactUri, queryFields
@@ -431,6 +443,9 @@ public class CrimeFragment extends Fragment {
         Log.d(TAG, "Contact ID: " + phoneID);
     }
 
+    /**
+     *
+     */
     public void getPhoneNumberUserContacts() {
         String[] queryFields2 = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
         Cursor cursorPhone = getActivity().getContentResolver().query
@@ -453,12 +468,18 @@ public class CrimeFragment extends Fragment {
         Log.d(TAG, "Contact Phone: " + phoneNumber);
     }
 
+    /**
+     *
+     */
     public void callPhoneNumber() {
         Uri call = Uri.parse("tel:" + phoneNumber);
         Intent intent = new Intent(Intent.ACTION_DIAL, call);
         startActivity(intent);
     }
 
+    /**
+     *
+     */
     public void returnResult(Date date, UUID id) {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_CRIME_DATE, date);
@@ -467,12 +488,18 @@ public class CrimeFragment extends Fragment {
         getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
+    /**
+     *
+     */
     private void updateDate() {
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
         String stringDateFormat = dateFormat.format(mCrime.getDate());
         mDateButton.setText(stringDateFormat);
     }
 
+    /**
+     *
+     */
     private String getCrimeReport() {
         String solvedString = null;
         if (mCrime.isSolved()) {
@@ -495,10 +522,16 @@ public class CrimeFragment extends Fragment {
         return report;
     }
 
+    /**
+     *
+     */
     private void updateTime() {
         mTimeButton.setText(mCrime.getTime());
     }
 
+    /**
+     * получение разрешения работы с контактами девайса
+     */
     public void getPermissionToReadUserContacts() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -525,6 +558,28 @@ public class CrimeFragment extends Fragment {
         }
     }
 
+    /**
+     * получение разрешения работы с контактами девайса без алерта
+     */
+    public void getPermissionToReadUserContactsWithoutAlert() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (shouldShowRequestPermissionRationale(
+                    Manifest.permission.READ_CONTACTS)) {
+            }
+
+            if (Build.VERSION.SDK_INT >= 24) {
+                            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
+                                    READ_CONTACTS_PERMISSIONS_REQUEST);
+            }
+        }
+    }
+
+    /**
+     * получение разрешения работы с камерой девайса
+     * сперва отображаем алерт с пердупреждением
+     */
     public void getPermissionToCamera() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -546,6 +601,45 @@ public class CrimeFragment extends Fragment {
                     });
             AlertDialog alert = builder.create();
             alert.show();
+        }
+    }
+
+    /**
+     * получение разрешения работы с камерой девайса без алерта
+     */
+    public void getPermissionToCameraWithoutAlert() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (shouldShowRequestPermissionRationale(
+                    Manifest.permission.CAMERA)) {
+            }
+
+            if (Build.VERSION.SDK_INT >= 24) {
+                requestPermissions(new String[]{Manifest.permission.CAMERA},
+                        CAMERA_PERMISSIONS_REQUEST);
+            }
+        }
+    }
+
+    /**
+     * получение мульти разрешения для работы с контактами и с камерой
+     */
+    public void getMultiPermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.READ_CONTACTS) +
+            ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
+                shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+            } else {
+                if (Build.VERSION.SDK_INT >= 24) {
+                    requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS},
+                            CAMERA_PERMISSIONS_REQUEST);
+                }
+            }
         }
     }
 
