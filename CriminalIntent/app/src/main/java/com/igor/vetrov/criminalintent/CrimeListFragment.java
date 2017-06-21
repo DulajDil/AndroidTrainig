@@ -62,12 +62,20 @@ public class CrimeListFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    /**
+     * получаем список прустплений
+     */
     private List<Crime> getCrimes() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
         return crimes;
     }
 
+    /**
+     * отображение кнопки добавления нового преступления
+     * если список с преступлениями не пустой кнопка скрыта
+     * если список пустой добавляем кнопку и слушателя
+     */
     private void showAddCrimeButton(List<Crime> crimes) {
         if (crimes.size() > 0) {
             mAddCrime.setVisibility(View.GONE);
@@ -76,8 +84,10 @@ public class CrimeListFragment extends Fragment {
             mAddCrime.setOnClickListener(v -> {
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).addCrime(crime);
-                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId(), mSubtitleVisible);
-                startActivity(intent);
+//                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId(), mSubtitleVisible);
+//                startActivity(intent);
+                mCallbacks.onCrimeSelected(crime, mSubtitleVisible);
+                updateUI();
             });
         }
     }
@@ -148,9 +158,11 @@ public class CrimeListFragment extends Fragment {
         mCallbacks = null;
     }
 
+    /**
+     * обновление загалока каунтера количества текущих пруступлений
+     */
     private void updateSubtitle() {
-        CrimeLab crimeLab = CrimeLab.get(getActivity());
-        int crimeSize = crimeLab.getCrimes().size();
+        int crimeSize = getCrimes().size();
         String subtitle = getResources().getQuantityString(R.plurals.subtitle_plural, crimeSize, crimeSize);
         if (!mSubtitleVisible) {
             subtitle = null;
@@ -159,9 +171,13 @@ public class CrimeListFragment extends Fragment {
         activity.getSupportActionBar().setSubtitle(subtitle);
     }
 
+    /**
+     * обновляем UI
+     * getCrimes() получаем список перступлений
+     * showAddCrimeButton отображение кпоки добавления преступлений
+     */
     public void updateUI() {
-        CrimeLab crimeLab = CrimeLab.get(getActivity());
-        List<Crime> crimes = crimeLab.getCrimes();
+        List<Crime> crimes = getCrimes();
 
         if (mAdapter == null) {
             mAdapter = new CrimeAdapter(crimes);
@@ -203,6 +219,7 @@ public class CrimeListFragment extends Fragment {
                 mCrime.setSolved(isChecked);
                 CrimeLab crimeLab = CrimeLab.get(getActivity());
                 crimeLab.updateCrime(mCrime);
+//                updateUI();
             });
         }
 
