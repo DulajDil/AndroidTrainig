@@ -1,19 +1,30 @@
 package com.igor.vetrov.beatbox;
 
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class BeatBoxFragment extends Fragment{
+public class BeatBoxFragment extends Fragment {
+
+    private BeatBox mBeatBox;
 
     public static BeatBoxFragment newInstance() {
         return new BeatBoxFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Log.i("i'm logger", "run onCreate BeatBoxFragment");
+        mBeatBox = new BeatBox(getActivity());
     }
 
     @Override
