@@ -3,6 +3,10 @@ package com.igor.vetrov.beatbox;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.IOException;
@@ -14,12 +18,32 @@ public class BeatBox {
     private static final String TAG = "BeatBox";
 
     private static final String SOUNDS_FOLDER = "sample_sounds";
+    private static final int MAX_SOUNDS = 5;
 
     private AssetManager mAssets;
     private List<Sound> mSounds = new ArrayList<>();
+    private SoundPool mSoundPool;
 
     public BeatBox(Context context) {
         mAssets = context.getAssets();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            AudioAttributes audioAttrib = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build();
+            mSoundPool = new SoundPool.Builder()
+                    .setAudioAttributes(audioAttrib)
+                    .setMaxStreams(MAX_SOUNDS)
+                    .build();
+        } else {
+            // Этот конструктор считается устаревшим,
+            // но он нужен для обеспечения совместимости.
+            mSoundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0);
+        }
+
+
+
 
         loadSounds();
     }
