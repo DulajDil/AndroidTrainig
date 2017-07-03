@@ -19,15 +19,23 @@ public class BeatBox {
     private static final String TAG = "BeatBox";
 
     private static final String SOUNDS_FOLDER = "sample_sounds";
+<<<<<<< HEAD
     private static final int MAX_SOUNDS = 5;
 
     private AssetManager mAssets;
     private List<Sound> mSounds = new ArrayList<>();
+=======
+    private static final int MAX_SOUND = 5;
+
+    private AssetManager mAssets;
+    private List<Sound> mSounds;
+>>>>>>> origin/master
     private SoundPool mSoundPool;
 
     public BeatBox(Context context) {
         mAssets = context.getAssets();
 
+<<<<<<< HEAD
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             AudioAttributes audioAttrib = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_GAME)
@@ -42,6 +50,21 @@ public class BeatBox {
             // но он нужен для обеспечения совместимости.
             mSoundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0);
         }
+=======
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes audioAttrib = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .build();
+            mSoundPool = new SoundPool.Builder()
+                    .setAudioAttributes(audioAttrib)
+                    .setMaxStreams(MAX_SOUND)
+                    .build();
+        } else {
+            mSoundPool = new SoundPool(MAX_SOUND, AudioManager.STREAM_MUSIC, 0);
+        }
+
+>>>>>>> origin/master
         loadSounds();
     }
 
@@ -54,16 +77,25 @@ public class BeatBox {
             Log.e(TAG, "Could not list assets", ioe);
             return;
         }
+        mSounds = new ArrayList<>();
         for (String filename : soundNames) {
             try {
                 String assetPath = SOUNDS_FOLDER + "/" + filename;
                 Sound sound = new Sound(assetPath);
                 load(sound);
                 mSounds.add(sound);
+<<<<<<< HEAD
                 Log.i(TAG, "load sound " + sound.getName());
             } catch (IOException ioe) {
                 Log.e(TAG, "Could not load sound " + filename, ioe);
             }
+=======
+                Log.i(TAG, "Load sound to name " + sound.getName());
+            } catch (IOException ioe) {
+                Log.e(TAG, "Could not load sound " + filename, ioe);
+            }
+
+>>>>>>> origin/master
         }
     }
 
