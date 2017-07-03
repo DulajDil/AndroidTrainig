@@ -29,10 +29,6 @@ public class Sound {
     }
 
     public void setSoundId(Integer soundId) {
-<<<<<<< HEAD
-        mSoundId = soundId;
-=======
         this.mSoundId = soundId;
->>>>>>> origin/master
     }
 }

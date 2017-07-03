@@ -9,6 +9,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,38 +20,15 @@ public class BeatBox {
     private static final String TAG = "BeatBox";
 
     private static final String SOUNDS_FOLDER = "sample_sounds";
-<<<<<<< HEAD
     private static final int MAX_SOUNDS = 5;
 
     private AssetManager mAssets;
-    private List<Sound> mSounds = new ArrayList<>();
-=======
-    private static final int MAX_SOUND = 5;
-
-    private AssetManager mAssets;
     private List<Sound> mSounds;
->>>>>>> origin/master
     private SoundPool mSoundPool;
 
     public BeatBox(Context context) {
         mAssets = context.getAssets();
 
-<<<<<<< HEAD
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            AudioAttributes audioAttrib = new AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_GAME)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build();
-            mSoundPool = new SoundPool.Builder()
-                    .setAudioAttributes(audioAttrib)
-                    .setMaxStreams(MAX_SOUNDS)
-                    .build();
-        } else {
-            // Этот конструктор считается устаревшим,
-            // но он нужен для обеспечения совместимости.
-            mSoundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0);
-        }
-=======
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             AudioAttributes audioAttrib = new AudioAttributes.Builder()
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -58,13 +36,11 @@ public class BeatBox {
                     .build();
             mSoundPool = new SoundPool.Builder()
                     .setAudioAttributes(audioAttrib)
-                    .setMaxStreams(MAX_SOUND)
+                    .setMaxStreams(MAX_SOUNDS)
                     .build();
         } else {
-            mSoundPool = new SoundPool(MAX_SOUND, AudioManager.STREAM_MUSIC, 0);
+            mSoundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0);
         }
-
->>>>>>> origin/master
         loadSounds();
     }
 
@@ -84,18 +60,10 @@ public class BeatBox {
                 Sound sound = new Sound(assetPath);
                 load(sound);
                 mSounds.add(sound);
-<<<<<<< HEAD
-                Log.i(TAG, "load sound " + sound.getName());
+                Log.i(TAG, "Load sound to name " + sound.getName() + " id " + sound.getSoundId());
             } catch (IOException ioe) {
                 Log.e(TAG, "Could not load sound " + filename, ioe);
             }
-=======
-                Log.i(TAG, "Load sound to name " + sound.getName());
-            } catch (IOException ioe) {
-                Log.e(TAG, "Could not load sound " + filename, ioe);
-            }
-
->>>>>>> origin/master
         }
     }
 
@@ -103,6 +71,20 @@ public class BeatBox {
         AssetFileDescriptor afd = mAssets.openFd(sound.getAssetPath());
         int soundId = mSoundPool.load(afd, 1);
         sound.setSoundId(soundId);
+    }
+
+    public void play(Sound sound) {
+        Integer soundId = sound.getSoundId();
+        if (soundId == null) {
+            return;
+        }
+        mSoundPool.play(soundId, 3.0f, 3.0f, 1, 0, 1.0f);
+        Log.i(TAG, "Play sound id " + soundId);
+//        Toast.makeText(context, "", Toast.LENGTH_SHORT);
+    }
+
+    public void release() {
+        mSoundPool.release();
     }
 
     public List<Sound> getSounds() {
