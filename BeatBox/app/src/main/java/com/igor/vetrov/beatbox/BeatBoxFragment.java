@@ -28,6 +28,7 @@ public class BeatBoxFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         Log.i("i'm logger", "run onCreate BeatBoxFragment");
+        setRetainInstance(true);
         mBeatBox = new BeatBox(getActivity());
     }
 
