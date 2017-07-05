@@ -10,13 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.List;
 
 public class BeatBoxFragment extends Fragment {
 
     private BeatBox mBeatBox;
-    private Sound mSound;
+
 
     public static BeatBoxFragment newInstance() {
         return new BeatBoxFragment();
@@ -27,6 +28,7 @@ public class BeatBoxFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         Log.i("i'm logger", "run onCreate BeatBoxFragment");
+        setRetainInstance(true);
         mBeatBox = new BeatBox(getActivity());
     }
 
@@ -40,9 +42,20 @@ public class BeatBoxFragment extends Fragment {
         return view;
     }
 
+<<<<<<< HEAD
     private class SoundHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+=======
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mBeatBox.release();
+    }
+
+    private class SoundHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+>>>>>>> origin/master
 
         private Button mButton;
+        private Sound mSound;
 
         public SoundHolder(LayoutInflater inflater, ViewGroup container) {
 
@@ -60,6 +73,10 @@ public class BeatBoxFragment extends Fragment {
         @Override
         public void onClick(View v) {
             mBeatBox.play(mSound);
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
         }
     }
 

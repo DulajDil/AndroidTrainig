@@ -9,6 +9,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class BeatBox {
     private static final String TAG = "BeatBox";
 
     private static final String SOUNDS_FOLDER = "sample_sounds";
-    private static final int MAX_SOUND = 5;
+    private static final int MAX_SOUNDS = 5;
 
     private AssetManager mAssets;
     private List<Sound> mSounds;
@@ -35,12 +36,11 @@ public class BeatBox {
                     .build();
             mSoundPool = new SoundPool.Builder()
                     .setAudioAttributes(audioAttrib)
-                    .setMaxStreams(MAX_SOUND)
+                    .setMaxStreams(MAX_SOUNDS)
                     .build();
         } else {
-            mSoundPool = new SoundPool(MAX_SOUND, AudioManager.STREAM_MUSIC, 0);
+            mSoundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0);
         }
-
         loadSounds();
     }
 
@@ -60,11 +60,10 @@ public class BeatBox {
                 Sound sound = new Sound(assetPath);
                 load(sound);
                 mSounds.add(sound);
-                Log.i(TAG, "Load sound to name " + sound.getName());
+                Log.i(TAG, "Load sound to name " + sound.getName() + " id " + sound.getSoundId());
             } catch (IOException ioe) {
                 Log.e(TAG, "Could not load sound " + filename, ioe);
             }
-
         }
     }
 
@@ -79,7 +78,17 @@ public class BeatBox {
         if (soundId == null) {
             return;
         }
+<<<<<<< HEAD
         mSoundPool.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f);
+=======
+        mSoundPool.play(soundId, 3.0f, 3.0f, 1, 0, 1.0f);
+        Log.i(TAG, "Play sound id " + soundId);
+//        Toast.makeText(context, "", Toast.LENGTH_SHORT);
+    }
+
+    public void release() {
+        mSoundPool.release();
+>>>>>>> origin/master
     }
 
     public List<Sound> getSounds() {
