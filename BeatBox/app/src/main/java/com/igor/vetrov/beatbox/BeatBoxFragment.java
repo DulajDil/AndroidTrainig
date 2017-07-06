@@ -42,9 +42,6 @@ public class BeatBoxFragment extends Fragment {
         return view;
     }
 
-<<<<<<< HEAD
-    private class SoundHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-=======
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -52,7 +49,6 @@ public class BeatBoxFragment extends Fragment {
     }
 
     private class SoundHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
->>>>>>> origin/master
 
         private Button mButton;
         private Sound mSound;
@@ -73,10 +69,6 @@ public class BeatBoxFragment extends Fragment {
         @Override
         public void onClick(View v) {
             mBeatBox.play(mSound);
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
         }
     }
 

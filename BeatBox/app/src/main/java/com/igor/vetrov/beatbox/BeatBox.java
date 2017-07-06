@@ -78,9 +78,6 @@ public class BeatBox {
         if (soundId == null) {
             return;
         }
-<<<<<<< HEAD
-        mSoundPool.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f);
-=======
         mSoundPool.play(soundId, 3.0f, 3.0f, 1, 0, 1.0f);
         Log.i(TAG, "Play sound id " + soundId);
 //        Toast.makeText(context, "", Toast.LENGTH_SHORT);
@@ -88,7 +85,6 @@ public class BeatBox {
 
     public void release() {
         mSoundPool.release();
->>>>>>> origin/master
     }
 
     public List<Sound> getSounds() {
