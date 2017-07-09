@@ -12,6 +12,7 @@
         android:layout_height="100dp"
         android:layout_gravity="center"
         tools:text="Sound name"
+        android:background="@drawable/button_beat_box_normal"
         />
 
 </FrameLayout>
