@@ -8,11 +8,15 @@
         <item name="colorAccent">@color/colorAccent</item>
         
         <item name="android:colorBackground">@color/colorAccent</item>
-        <item name="android:buttonStyle">@style/BeatBoxButton</item>
+        <item name="android:buttonStyle">@style/BeatBoxButton1</item>
     </style>
 
-    <style name="BeatBoxButton" parent="android:style/Widget.Holo.Button">
-        <item name="android:background">@drawable/button_beat_box_normal</item>
+    <style name="BeatBoxButton1" parent="android:style/Widget.Button">
+        <item name="android:background">@drawable/button_beat_box</item>
+    </style>
+
+    <style name="BeatBoxButton3" parent="android:style/Widget.Button">
+        <item name="android:background">@color/dark_red</item>
     </style>
 
 
