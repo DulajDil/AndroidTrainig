@@ -12,7 +12,7 @@
     </style>
 
     <style name="BeatBoxButton1" parent="android:style/Widget.Button">
-        <item name="android:background">@drawable/button_beat_box</item>
+        <item name="android:background">@drawable/button_beat_box_2</item>
     </style>
 
     <style name="BeatBoxButton3" parent="android:style/Widget.Button">
