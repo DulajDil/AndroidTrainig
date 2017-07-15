@@ -80,7 +80,9 @@ public class NerdLauncherFragment extends Fragment {
         @Override
         public void onClick(View v) {
             ActivityInfo actInfo = mResolveInfo.activityInfo;
-            Intent i = new Intent(Intent.ACTION_MAIN).setClassName(actInfo.applicationInfo.packageName, actInfo.name);
+            Intent i = new Intent(Intent.ACTION_MAIN)
+                    .setClassName(actInfo.applicationInfo.packageName, actInfo.name)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             startActivity(i);
         }
