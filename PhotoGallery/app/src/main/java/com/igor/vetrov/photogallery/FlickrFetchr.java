@@ -7,6 +7,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.http.GET;
+
 public class FlickrFetchr {
 
     public byte[] getUrlBytes(String urlSpec) throws IOException {
@@ -36,5 +40,12 @@ public class FlickrFetchr {
         return new String(getUrlBytes(urlSpec));
     }
 
-    
+    public interface connect{
+
+        @GET()
+        Call<ResponseBody> getUrlBytes();
+    }
+
+
+
 }
