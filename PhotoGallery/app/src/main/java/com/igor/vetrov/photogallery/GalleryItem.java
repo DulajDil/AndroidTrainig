@@ -9,8 +9,17 @@ public class GalleryItem {
 
     @Override
     public String toString() {
-        return mCaption;
+        return "GalleryItem{" +
+                "mCaption='" + mCaption + '\'' +
+                ", mId='" + mId + '\'' +
+                ", mUrl='" + mUrl + '\'' +
+                '}';
     }
+
+//    @Override
+//    public String toString() {
+//        return mCaption;
+//    }
 
     public String getCaption() {
         return mCaption;
