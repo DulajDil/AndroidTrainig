@@ -1,10 +1,19 @@
 package com.igor.vetrov.photogallery;
 
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class GalleryItem {
 
+    @SerializedName("title")
+    @Expose
     private String mCaption;
+    @SerializedName("id")
+    @Expose
     private String mId;
+    @SerializedName("url_s")
+    @Expose
     private String mUrl;
 
     @Override
