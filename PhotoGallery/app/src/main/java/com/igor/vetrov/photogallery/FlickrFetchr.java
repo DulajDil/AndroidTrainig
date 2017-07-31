@@ -4,6 +4,9 @@ package com.igor.vetrov.photogallery;
 import android.net.Uri;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,14 +15,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.http.GET;
 
 public class FlickrFetchr {
 
@@ -55,7 +53,7 @@ public class FlickrFetchr {
     }
 
     public List<GalleryItem> fetchItems() {
-        ArrayList<GalleryItem> items = new ArrayList<>();
+        List<GalleryItem> items = null;
         String url = Uri.parse(API_URL)
                 .buildUpon()
                 .appendQueryParameter("method", "flickr.photos.getRecent")
@@ -69,7 +67,7 @@ public class FlickrFetchr {
             String jsonString = getUrlString(url);
             Log.i(TAG, "Received JSON: " + jsonString);
             JSONObject jsonBody = new JSONObject(jsonString);
-            parseItems(items, jsonBody);
+            items = parseItems2(jsonBody);
         } catch (JSONException je) {
             Log.e(TAG, "Failed to parse JSON", je);
         }catch (IOException ioe) {
@@ -97,12 +95,13 @@ public class FlickrFetchr {
         }
     }
 
-    public interface connect{
+    private List<GalleryItem> parseItems2(JSONObject jsonBody) throws JSONException {
+        JSONObject photosJsonObject = jsonBody.getJSONObject("photos");
+        JSONArray photoJsonArray = photosJsonObject.getJSONArray("photo");
 
-        @GET()
-        Call<ResponseBody> getUrlBytes();
+        Gson gson = new Gson();
+        List<GalleryItem> items = gson.fromJson(photoJsonArray.toString(), new TypeToken<List<GalleryItem>>() {}.getType());
+        Log.i(TAG, "Received gallery items list objects: " + items);
+        return items;
     }
-
-
-
 }
