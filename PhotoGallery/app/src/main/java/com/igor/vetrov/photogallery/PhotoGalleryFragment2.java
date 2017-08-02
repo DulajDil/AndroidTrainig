@@ -27,7 +27,10 @@ import retrofit2.Response;
 public class PhotoGalleryFragment2 extends Fragment {
 
     private static final String TAG = "PhotoGalleryFragment";
+
     private RecyclerView mPhotoRecyclerView;
+    private PhotoAdapter mAdapter;
+
     private List<GalleryItem> mItems = new ArrayList<>();
 
     private PhotoGalleryClient mService;
@@ -48,6 +51,8 @@ public class PhotoGalleryFragment2 extends Fragment {
         View v = inflater.inflate(R.layout.fragment_photo_gallery, conteiner, false);
         mPhotoRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_photo_gallery_recycler_view);
         mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        mAdapter = new PhotoGalleryFragment2.PhotoAdapter(mItems);
+        mPhotoRecyclerView.setAdapter(mAdapter);
 
         loadPhotoGalleryItems();
 
@@ -55,7 +60,6 @@ public class PhotoGalleryFragment2 extends Fragment {
     }
 
     private void loadPhotoGalleryItems() {
-        mPhotoRecyclerView.setAdapter(new PhotoGalleryFragment2.PhotoAdapter(mItems));
         Map<String, String> params = new HashMap<>();
         params.put("method", "flickr.photos.getRecent");
         params.put("api_key", FlickrFetchr2.API_KEY);
@@ -82,7 +86,7 @@ public class PhotoGalleryFragment2 extends Fragment {
                 Log.i(TAG, "Received gallery items list objects: " + mItems);
 
                 Log.i(TAG, "Getting response: " + mItems);
-//                    mPhotoRecyclerView.setAdapter(new PhotoGalleryFragment2.PhotoAdapter(mItems));
+                mAdapter.updatePhotoGallery(mItems);
             }
 
             @Override
@@ -129,6 +133,11 @@ public class PhotoGalleryFragment2 extends Fragment {
         @Override
         public int getItemCount() {
             return mGalleryItems.size();
+        }
+
+        public void updatePhotoGallery(List<GalleryItem> items) {
+            mGalleryItems = items;
+            notifyDataSetChanged();
         }
     }
 }
