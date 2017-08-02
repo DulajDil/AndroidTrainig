@@ -1,4 +1,4 @@
-package com.igor.vetrov.photogallery;
+package com.igor.vetrov.photogallery.model;
 
 
 import com.google.gson.annotations.Expose;

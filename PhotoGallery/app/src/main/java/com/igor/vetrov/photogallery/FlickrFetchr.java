@@ -6,6 +6,9 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.igor.vetrov.photogallery.model.GalleryItem;
+import com.igor.vetrov.photogallery.model.Photos;
+import com.igor.vetrov.photogallery.model.ResponsePhotogallery;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FlickrFetchr {
@@ -67,7 +69,7 @@ public class FlickrFetchr {
             String jsonString = getUrlString(url);
             Log.i(TAG, "Received JSON: " + jsonString);
             JSONObject jsonBody = new JSONObject(jsonString);
-            items = parseItems2(jsonBody);
+            items = parseItems3(jsonBody);
         } catch (JSONException je) {
             Log.e(TAG, "Failed to parse JSON", je);
         }catch (IOException ioe) {
@@ -102,6 +104,23 @@ public class FlickrFetchr {
         Gson gson = new Gson();
         List<GalleryItem> items = gson.fromJson(photoJsonArray.toString(), new TypeToken<List<GalleryItem>>() {}.getType());
         Log.i(TAG, "Received gallery items list objects: " + items);
+        return items;
+    }
+
+    private List<GalleryItem> parseItems3(JSONObject jsonBody) {
+        Gson gson = new Gson();
+        ResponsePhotogallery res = gson.fromJson(jsonBody.toString(), new TypeToken<ResponsePhotogallery>() {}.getType());
+
+        Log.i(TAG, "Received response object: " + res);
+
+        Photos photos = res.getPhotos();
+
+        Log.i(TAG, "Received object photos: " + photos);
+
+        List<GalleryItem> items = photos.getPhoto();
+
+        Log.i(TAG, "Received gallery items list objects: " + items);
+
         return items;
     }
 }

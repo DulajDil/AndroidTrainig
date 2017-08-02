@@ -11,8 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.igor.vetrov.photogallery.model.GalleryItem;
+import com.igor.vetrov.photogallery.model.Photos;
+import com.igor.vetrov.photogallery.model.ResponsePhotogallery;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,6 +30,8 @@ public class PhotoGalleryFragment2 extends Fragment {
     private RecyclerView mPhotoRecyclerView;
     private List<GalleryItem> mItems = new ArrayList<>();
 
+    private PhotoGalleryClient mService;
+
     public static PhotoGalleryFragment2 newInstance() {
         return new PhotoGalleryFragment2();
     }
@@ -32,6 +40,7 @@ public class PhotoGalleryFragment2 extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        mService = FlickrFetchr2.fetchItems();
     }
 
     @Override
@@ -46,23 +55,41 @@ public class PhotoGalleryFragment2 extends Fragment {
     }
 
     private void loadPhotoGalleryItems() {
-        if (isAdded()) {
-            mPhotoRecyclerView.setAdapter(new PhotoGalleryFragment2.PhotoAdapter(mItems));
-            Call<List<GalleryItem>> call = new FlickrFetchr2().fetchItems();
-            call.enqueue(new Callback<List<GalleryItem>>() {
-                @Override
-                public void onResponse(Call<List<GalleryItem>> call, Response<List<GalleryItem>> response) {
-                    mItems = response.body();
-                    Log.i(TAG, "Getting response: " + mItems);
-//                    mPhotoRecyclerView.setAdapter(new PhotoGalleryFragment2.PhotoAdapter(mItems));
-                }
+        mPhotoRecyclerView.setAdapter(new PhotoGalleryFragment2.PhotoAdapter(mItems));
+        Map<String, String> params = new HashMap<>();
+        params.put("method", "flickr.photos.getRecent");
+        params.put("api_key", FlickrFetchr2.API_KEY);
+        params.put("format", "json");
+        params.put("nojsoncallback", "1");
+        params.put("extras", "url_s");
 
-                @Override
-                public void onFailure(Call<List<GalleryItem>> call, Throwable t) {
-                    Log.e(TAG, "Failed getting photogallery", t);
-                }
-            });
-        }
+
+        Call<ResponsePhotogallery> call = mService.fetchItems(params);
+        call.enqueue(new Callback<ResponsePhotogallery>() {
+            @Override
+            public void onResponse(Call<ResponsePhotogallery> call, Response<ResponsePhotogallery> response) {
+
+                ResponsePhotogallery body = response.body();
+
+                Log.i(TAG, "Received response object: " + body);
+
+                Photos photos = body.getPhotos();
+
+                Log.i(TAG, "Received object photos: " + photos);
+
+                mItems = photos.getPhoto();
+
+                Log.i(TAG, "Received gallery items list objects: " + mItems);
+
+                Log.i(TAG, "Getting response: " + mItems);
+//                    mPhotoRecyclerView.setAdapter(new PhotoGalleryFragment2.PhotoAdapter(mItems));
+            }
+
+            @Override
+            public void onFailure(Call<ResponsePhotogallery> call, Throwable t) {
+                Log.e(TAG, "Failed getting photogallery", t);
+            }
+        });
     }
 
     private class PhotoHolder extends RecyclerView.ViewHolder {

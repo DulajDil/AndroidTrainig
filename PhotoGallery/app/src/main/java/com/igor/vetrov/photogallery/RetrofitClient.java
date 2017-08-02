@@ -2,6 +2,7 @@ package com.igor.vetrov.photogallery;
 
 
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
@@ -11,6 +12,7 @@ public class RetrofitClient {
         if (sRetrofit == null) {
             sRetrofit = new Retrofit.Builder()
                     .baseUrl(baseUrl)
+                    .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
         return sRetrofit;
