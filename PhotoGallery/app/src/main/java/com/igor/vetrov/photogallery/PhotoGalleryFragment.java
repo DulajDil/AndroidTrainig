@@ -30,7 +30,7 @@ public class PhotoGalleryFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        new FetchItemsTask().execute();
+        new FetchItemsTask().execute(1);
     }
 
     @Override
@@ -38,6 +38,16 @@ public class PhotoGalleryFragment extends Fragment{
         View v = inflater.inflate(R.layout.fragment_photo_gallery, conteiner, false);
         mPhotoRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_photo_gallery_recycler_view);
         mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+            }
+        });
 
         setupAdapter();
 
@@ -90,17 +100,17 @@ public class PhotoGalleryFragment extends Fragment{
         }
     }
 
-    private class FetchItemsTask extends AsyncTask<Void, Void, List<GalleryItem>> {
+    private class FetchItemsTask extends AsyncTask<Integer, Void, List<GalleryItem>> {
 
         @Override
-        protected List<GalleryItem> doInBackground(Void... voids) {
+        protected List<GalleryItem> doInBackground(Integer... page) {
 //            try {
 //                String result = new FlickrFetchr().getUrlString("https://www.bignerdranch.com");
 //                Log.i(TAG, "Fetched contents of URL: " + result);
 //            } catch (IOException ioe) {
 //                Log.e(TAG, "Failed to fetch URL: ", ioe);
 //            }
-            return new FlickrFetchr().fetchItems();
+            return new FlickrFetchr().fetchItems(page[0]);
         }
 
         @Override

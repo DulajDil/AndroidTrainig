@@ -56,6 +56,10 @@ public class PhotoGalleryFragment2 extends Fragment {
 
         loadPhotoGalleryItems();
 
+        mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+        });
+
         return v;
     }
 
