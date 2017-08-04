@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,9 @@ public class PhotoGalleryFragment extends Fragment{
 
     private static final String TAG = "PhotoGalleryFragment";
     private RecyclerView mPhotoRecyclerView;
+    private boolean loading = true;
+    private int previousTotal = 80;
+    private int currentPage = 1;
     private List<GalleryItem> mItems = new ArrayList<>();
 
     public static PhotoGalleryFragment newInstance() {
@@ -30,14 +34,18 @@ public class PhotoGalleryFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        new FetchItemsTask().execute(1);
+        new FetchItemsTask().execute(currentPage);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup conteiner, Bundle savedInstance) {
         View v = inflater.inflate(R.layout.fragment_photo_gallery, conteiner, false);
         mPhotoRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_photo_gallery_recycler_view);
-        mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
+        mPhotoRecyclerView.setLayoutManager(layoutManager);
+
+        setupAdapter();
+
         mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -46,10 +54,31 @@ public class PhotoGalleryFragment extends Fragment{
                 int visibleItemCount = layoutManager.getChildCount();
                 int totalItemCount = layoutManager.getItemCount();
                 int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+
+//                Log.i(TAG, "After scroll all visible item position " + firstVisibleItemPosition);
+//                Log.i(TAG, "After scroll total item position " + totalItemCount);
+                Log.i(TAG, "After scroll last visible item position " + lastVisibleItemPosition);
+
+                if (loading) {
+                    if (firstVisibleItemPosition > previousTotal) {
+                        loading = false;
+                        previousTotal = previousTotal + firstVisibleItemPosition;
+                        currentPage++;
+                        Log.i(TAG, "Visible item position " + firstVisibleItemPosition + " Total item count " + totalItemCount);
+                    }
+                }
+                if (!loading && (previousTotal > totalItemCount)) {
+                    new FetchItemsTask().execute(currentPage);
+                    Log.i(TAG, String.format("Load %s page", currentPage));
+
+                    setupAdapter();
+                    loading = true;
+                }
             }
         });
 
-        setupAdapter();
+
 
         return v;
     }
