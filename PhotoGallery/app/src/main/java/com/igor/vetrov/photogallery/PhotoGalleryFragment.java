@@ -26,6 +26,12 @@ public class PhotoGalleryFragment extends Fragment{
     private int currentPage = 1;
     private List<GalleryItem> mItems = new ArrayList<>();
 
+    int visibleItemCount;
+    int totalItemCount;
+    int firstVisibleItemPosition;
+    int currentPage = 1;
+    private boolean loading = true;
+
     public static PhotoGalleryFragment newInstance() {
         return new PhotoGalleryFragment();
     }
@@ -43,14 +49,18 @@ public class PhotoGalleryFragment extends Fragment{
         mPhotoRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_photo_gallery_recycler_view);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
         mPhotoRecyclerView.setLayoutManager(layoutManager);
+<<<<<<< HEAD
 
         setupAdapter();
 
+=======
+>>>>>>> origin/master
         mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
+<<<<<<< HEAD
                 int visibleItemCount = layoutManager.getChildCount();
                 int totalItemCount = layoutManager.getItemCount();
                 int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
@@ -75,6 +85,20 @@ public class PhotoGalleryFragment extends Fragment{
                     setupAdapter();
                     loading = true;
                 }
+=======
+                visibleItemCount = layoutManager.getChildCount();
+                totalItemCount = layoutManager.getItemCount();
+                firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+
+                if (loading) {
+                    if (dy > 0) {
+                        Log.i(TAG, String.valueOf(dx));
+                        Log.i(TAG, "Visible item count" + visibleItemCount);
+                        Log.i(TAG, "Total item count" + totalItemCount);
+                        Log.i(TAG, "First visible item count" + firstVisibleItemPosition);
+                    }
+                }
+>>>>>>> origin/master
             }
         });
 
@@ -139,6 +163,7 @@ public class PhotoGalleryFragment extends Fragment{
 //            } catch (IOException ioe) {
 //                Log.e(TAG, "Failed to fetch URL: ", ioe);
 //            }
+            Log.i(TAG, "Page " + page[0]);
             return new FlickrFetchr().fetchItems(page[0]);
         }
 
