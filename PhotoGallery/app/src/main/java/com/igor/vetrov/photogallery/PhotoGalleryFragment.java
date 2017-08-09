@@ -21,15 +21,13 @@ public class PhotoGalleryFragment extends Fragment{
 
     private static final String TAG = "PhotoGalleryFragment";
     private RecyclerView mPhotoRecyclerView;
-    private boolean loading = true;
-    private int previousTotal = 80;
-    private int currentPage = 1;
     private List<GalleryItem> mItems = new ArrayList<>();
 
     int visibleItemCount;
     int totalItemCount;
     int firstVisibleItemPosition;
     int currentPage = 1;
+    private int previousTotal = 80;
     private boolean loading = true;
 
     public static PhotoGalleryFragment newInstance() {
@@ -49,56 +47,29 @@ public class PhotoGalleryFragment extends Fragment{
         mPhotoRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_photo_gallery_recycler_view);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
         mPhotoRecyclerView.setLayoutManager(layoutManager);
-<<<<<<< HEAD
-
         setupAdapter();
 
-=======
->>>>>>> origin/master
         mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
-<<<<<<< HEAD
-                int visibleItemCount = layoutManager.getChildCount();
-                int totalItemCount = layoutManager.getItemCount();
-                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-
-//                Log.i(TAG, "After scroll all visible item position " + firstVisibleItemPosition);
-//                Log.i(TAG, "After scroll total item position " + totalItemCount);
-                Log.i(TAG, "After scroll last visible item position " + lastVisibleItemPosition);
-
-                if (loading) {
-                    if (firstVisibleItemPosition > previousTotal) {
-                        loading = false;
-                        previousTotal = previousTotal + firstVisibleItemPosition;
-                        currentPage++;
-                        Log.i(TAG, "Visible item position " + firstVisibleItemPosition + " Total item count " + totalItemCount);
-                    }
-                }
-                if (!loading && (previousTotal > totalItemCount)) {
-                    new FetchItemsTask().execute(currentPage);
-                    Log.i(TAG, String.format("Load %s page", currentPage));
-
-                    setupAdapter();
-                    loading = true;
-                }
-=======
                 visibleItemCount = layoutManager.getChildCount();
                 totalItemCount = layoutManager.getItemCount();
                 firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
-                if (loading) {
+                if (!loading) {
                     if (dy > 0) {
                         Log.i(TAG, String.valueOf(dx));
                         Log.i(TAG, "Visible item count" + visibleItemCount);
                         Log.i(TAG, "Total item count" + totalItemCount);
                         Log.i(TAG, "First visible item count" + firstVisibleItemPosition);
                     }
+                    currentPage++;
+                    loading = false;
+                    new FetchItemsTask().execute(currentPage);
+                    Log.i(TAG, String.format("Load %s page", currentPage));
+                    setupAdapter();
                 }
->>>>>>> origin/master
             }
         });
 
