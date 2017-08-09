@@ -2,7 +2,9 @@ package com.igor.vetrov.photogallery;
 
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +18,7 @@ import com.igor.vetrov.photogallery.model.GalleryItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PhotoGalleryFragment extends Fragment{
 
@@ -50,6 +53,7 @@ public class PhotoGalleryFragment extends Fragment{
         setupAdapter();
 
         mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -57,18 +61,29 @@ public class PhotoGalleryFragment extends Fragment{
                 totalItemCount = layoutManager.getItemCount();
                 firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
-                if (!loading) {
+                List<GalleryItem> collect = mItems.stream()
+                        .filter(galleryItem -> galleryItem.getUrl().length() != 0).collect(Collectors.toList());
+                List<String> collect2 = mItems.stream().map(GalleryItem::getUrl).collect(Collectors.toList());
+
+                int i = 0;
+                for (String x:collect2) {
+                    i++;
+                    Log.i(TAG, "Url: " + i + " : " + x);
+                }
+
+                if (loading) {
                     if (dy > 0) {
-                        Log.i(TAG, String.valueOf(dx));
-                        Log.i(TAG, "Visible item count" + visibleItemCount);
-                        Log.i(TAG, "Total item count" + totalItemCount);
-                        Log.i(TAG, "First visible item count" + firstVisibleItemPosition);
+                        Log.i(TAG, "Collect: " + collect.size());
+                        Log.i(TAG, "Collect2: " + collect2.size());
+                        Log.i(TAG, "Visible item count " + visibleItemCount);
+                        Log.i(TAG, "Total item count " + totalItemCount);
+                        Log.i(TAG, "First visible item count " + firstVisibleItemPosition);
                     }
-                    currentPage++;
-                    loading = false;
-                    new FetchItemsTask().execute(currentPage);
+//                    currentPage++;
+//                    loading = false;
+//                    new FetchItemsTask().execute(currentPage);
                     Log.i(TAG, String.format("Load %s page", currentPage));
-                    setupAdapter();
+//                    setupAdapter();
                 }
             }
         });
