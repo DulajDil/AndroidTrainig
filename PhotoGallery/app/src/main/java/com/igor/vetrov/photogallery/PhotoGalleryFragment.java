@@ -18,7 +18,6 @@ import com.igor.vetrov.photogallery.model.GalleryItem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PhotoGalleryFragment extends Fragment{
 
@@ -29,8 +28,8 @@ public class PhotoGalleryFragment extends Fragment{
     int visibleItemCount;
     int totalItemCount;
     int firstVisibleItemPosition;
+    int lastVisibleItemPosition;
     int currentPage = 1;
-    private int previousTotal = 80;
     private boolean loading = true;
 
     public static PhotoGalleryFragment newInstance() {
@@ -60,30 +59,20 @@ public class PhotoGalleryFragment extends Fragment{
                 visibleItemCount = layoutManager.getChildCount();
                 totalItemCount = layoutManager.getItemCount();
                 firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
 
-                List<GalleryItem> collect = mItems.stream()
-                        .filter(galleryItem -> galleryItem.getUrl().length() != 0).collect(Collectors.toList());
-                List<String> collect2 = mItems.stream().map(GalleryItem::getUrl).collect(Collectors.toList());
 
-                int i = 0;
-                for (String x:collect2) {
-                    i++;
-                    Log.i(TAG, "Url: " + i + " : " + x);
-                }
 
                 if (loading) {
-                    if (dy > 0) {
-                        Log.i(TAG, "Collect: " + collect.size());
-                        Log.i(TAG, "Collect2: " + collect2.size());
-                        Log.i(TAG, "Visible item count " + visibleItemCount);
+                    if (lastVisibleItemPosition == totalItemCount - 1) {
                         Log.i(TAG, "Total item count " + totalItemCount);
-                        Log.i(TAG, "First visible item count " + firstVisibleItemPosition);
+                        Log.i(TAG, "Last visible item count " + lastVisibleItemPosition);
+                        loading = false;
+                        currentPage++;
+                        new FetchItemsTask().execute(currentPage);
+                        Log.i(TAG, String.format("Load %s page", currentPage));
+                        setupAdapter();
                     }
-//                    currentPage++;
-//                    loading = false;
-//                    new FetchItemsTask().execute(currentPage);
-                    Log.i(TAG, String.format("Load %s page", currentPage));
-//                    setupAdapter();
                 }
             }
         });
@@ -149,8 +138,9 @@ public class PhotoGalleryFragment extends Fragment{
 //            } catch (IOException ioe) {
 //                Log.e(TAG, "Failed to fetch URL: ", ioe);
 //            }
-            Log.i(TAG, "Page " + page[0]);
-            return new FlickrFetchr().fetchItems(page[0]);
+            Integer integer = page[0];
+            Log.i(TAG, "Page " + integer);
+            return new FlickrFetchr().fetchItems(integer);
         }
 
         @Override

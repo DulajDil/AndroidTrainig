@@ -56,6 +56,7 @@ public class FlickrFetchr {
 
     public List<GalleryItem> fetchItems(Integer i) {
         List<GalleryItem> items = null;
+        Log.i(TAG, "Parametr page: " + i);
         String url = Uri.parse(API_URL)
                 .buildUpon()
                 .appendQueryParameter("method", "flickr.photos.getRecent")
