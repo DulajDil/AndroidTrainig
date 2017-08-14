@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,6 +36,7 @@ public class PhotoGalleryFragment2 extends Fragment {
 
     private List<GalleryItem> mItems = new ArrayList<>();
 
+<<<<<<< HEAD
     int visibleItemCount;
     int totalItemCount;
     int firstVisibleItemPosition;
@@ -42,6 +44,14 @@ public class PhotoGalleryFragment2 extends Fragment {
     int currentPage = 1;
     private boolean loading = true;
 
+=======
+    private int visibleItemCount;
+    private int totalItemCount;
+    private int firstVisibleItemPosition;
+    private int lastVisibleItemPosition;
+    private int currentPage = 1;
+    private boolean loading = true;
+>>>>>>> origin/master
     private PhotoGalleryClient mService;
 
     public static PhotoGalleryFragment2 newInstance() {
@@ -77,11 +87,19 @@ public class PhotoGalleryFragment2 extends Fragment {
                 lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
 
                 if (loading) {
+<<<<<<< HEAD
                     if (lastVisibleItemPosition == totalItemCount - 1) {
                         loading = false;
                         Log.i(TAG, "Total item count " + totalItemCount);
                         Log.i(TAG, "Last visible item count " + lastVisibleItemPosition);
                         currentPage++;
+=======
+                    if (lastVisibleItemPosition ==  totalItemCount - 1) {
+                        loading = false;
+                        currentPage++;
+                        Log.i(TAG, "Total item count " + totalItemCount);
+                        Log.i(TAG, "Last visible item count position " + lastVisibleItemPosition);
+>>>>>>> origin/master
                         loadPhotoGalleryItems();
                     }
                 }
@@ -99,13 +117,18 @@ public class PhotoGalleryFragment2 extends Fragment {
         params.put("format", "json");
         params.put("nojsoncallback", "1");
         params.put("extras", "url_s");
+        params.put("page", String.valueOf(currentPage));
 
         Call<ResponsePhotogallery> call = mService.fetchItems(params, String.valueOf(currentPage));
         call.enqueue(new Callback<ResponsePhotogallery>() {
             @Override
             public void onResponse(Call<ResponsePhotogallery> call, Response<ResponsePhotogallery> response) {
 
+<<<<<<< HEAD
                 Log.i(TAG, "Url request: " + call.request().url());
+=======
+                Log.i(TAG, "URL to request: " + call.request().url());
+>>>>>>> origin/master
 
                 ResponsePhotogallery body = response.body();
                 Log.i(TAG, "Received response object: " + body);
@@ -113,11 +136,26 @@ public class PhotoGalleryFragment2 extends Fragment {
                 Photos photos = body.getPhotos();
                 Log.i(TAG, "Received object photos: " + photos);
 
+<<<<<<< HEAD
                 mItems = photos.getPhoto();
+=======
+                if (currentPage > 1) {
+                    List<GalleryItem> items = photos.getPhoto();
+                    for (int i = 0; i < items.size(); i++) {
+                        mItems.add(items.get(i));
+                    }
+                } else {
+                    mItems = photos.getPhoto();
+                }
+>>>>>>> origin/master
                 Log.i(TAG, "Received gallery items list objects: " + mItems);
 
                 Log.i(TAG, "Getting response: " + mItems);
                 mAdapter.updatePhotoGallery(mItems);
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
                 Log.i(TAG, String.format("Load %s page", currentPage));
                 loading = true;
             }

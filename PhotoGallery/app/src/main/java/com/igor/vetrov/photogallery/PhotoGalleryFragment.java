@@ -25,11 +25,19 @@ public class PhotoGalleryFragment extends Fragment{
     private RecyclerView mPhotoRecyclerView;
     private List<GalleryItem> mItems = new ArrayList<>();
 
+<<<<<<< HEAD
     int visibleItemCount;
     int totalItemCount;
     int firstVisibleItemPosition;
     int lastVisibleItemPosition;
     int currentPage = 1;
+=======
+    private int visibleItemCount;
+    private int totalItemCount;
+    private int firstVisibleItemPosition;
+    private int lastVisibleItemPosition;
+    private int currentPage = 1;
+>>>>>>> origin/master
     private boolean loading = true;
 
     public static PhotoGalleryFragment newInstance() {
@@ -60,6 +68,7 @@ public class PhotoGalleryFragment extends Fragment{
                 totalItemCount = layoutManager.getItemCount();
                 firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
                 lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+<<<<<<< HEAD
 
 
 
@@ -71,14 +80,21 @@ public class PhotoGalleryFragment extends Fragment{
                         currentPage++;
                         new FetchItemsTask().execute(currentPage);
                         Log.i(TAG, String.format("Load %s page", currentPage));
+=======
+
+                if (loading) {
+                    if (lastVisibleItemPosition ==  totalItemCount - 1) {
+                        loading = false;
+                        currentPage++;
+                        Log.i(TAG, "Total item count " + totalItemCount);
+                        Log.i(TAG, "Last visible item count position " + lastVisibleItemPosition);
+                        new FetchItemsTask().execute(currentPage);
+>>>>>>> origin/master
                         setupAdapter();
                     }
                 }
             }
         });
-
-
-
         return v;
     }
 
@@ -145,8 +161,16 @@ public class PhotoGalleryFragment extends Fragment{
 
         @Override
         protected void onPostExecute(List<GalleryItem> items) {
-            mItems = items;
+            if (currentPage > 1) {
+                for (int i = 0; i < items.size(); i++) {
+                    mItems.add(items.get(i));
+                }
+            } else {
+                mItems = items;
+            }
             setupAdapter();
+            Log.i(TAG, String.format("Load %s page", currentPage));
+            loading = true;
         }
     }
 }
