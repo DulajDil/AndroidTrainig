@@ -115,7 +115,14 @@ public class PhotoGalleryFragment2 extends Fragment {
                 Photos photos = body.getPhotos();
                 Log.i(TAG, "Received object photos: " + photos);
 
-                mItems = photos.getPhoto();
+                if (currentPage > 1) {
+                    List<GalleryItem> items = photos.getPhoto();
+                    for (int i = 0; i < items.size(); i++) {
+                        mItems.add(items.get(i));
+                    }
+                } else {
+                    mItems = photos.getPhoto();
+                }
                 Log.i(TAG, "Received gallery items list objects: " + mItems);
 
                 Log.i(TAG, "Getting response: " + mItems);
