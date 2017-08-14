@@ -1,7 +1,9 @@
 package com.igor.vetrov.photogallery;
 
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,6 +36,12 @@ public class PhotoGalleryFragment2 extends Fragment {
 
     private List<GalleryItem> mItems = new ArrayList<>();
 
+    int visibleItemCount;
+    private int totalItemCount;
+    private int firstVisibleItemPosition;
+    private int lastVisibleItemPosition;
+    private int currentPage = 1;
+    private boolean loading = true;
     private PhotoGalleryClient mService;
 
     public static PhotoGalleryFragment2 newInstance() {
@@ -50,14 +59,34 @@ public class PhotoGalleryFragment2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup conteiner, Bundle savedInstance) {
         View v = inflater.inflate(R.layout.fragment_photo_gallery, conteiner, false);
         mPhotoRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_photo_gallery_recycler_view);
-        mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
+        mPhotoRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new PhotoGalleryFragment2.PhotoAdapter(mItems);
         mPhotoRecyclerView.setAdapter(mAdapter);
 
         loadPhotoGalleryItems();
 
         mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                visibleItemCount = layoutManager.getChildCount();
+                totalItemCount = layoutManager.getItemCount();
+                firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
 
+
+                if (loading) {
+                    if (lastVisibleItemPosition ==  totalItemCount - 1) {
+                        loading = false;
+                        currentPage++;
+                        Log.i(TAG, "Total item count " + totalItemCount);
+                        Log.i(TAG, "Last visible item count position " + lastVisibleItemPosition);
+                        loadPhotoGalleryItems();
+                    }
+                }
+            }
         });
 
         return v;
@@ -70,6 +99,7 @@ public class PhotoGalleryFragment2 extends Fragment {
         params.put("format", "json");
         params.put("nojsoncallback", "1");
         params.put("extras", "url_s");
+        params.put("page", String.valueOf(currentPage));
 
 
         Call<ResponsePhotogallery> call = mService.fetchItems(params);
@@ -77,20 +107,22 @@ public class PhotoGalleryFragment2 extends Fragment {
             @Override
             public void onResponse(Call<ResponsePhotogallery> call, Response<ResponsePhotogallery> response) {
 
-                ResponsePhotogallery body = response.body();
+                Log.i(TAG, "URL to request: " + call.request().url());
 
+                ResponsePhotogallery body = response.body();
                 Log.i(TAG, "Received response object: " + body);
 
                 Photos photos = body.getPhotos();
-
                 Log.i(TAG, "Received object photos: " + photos);
 
                 mItems = photos.getPhoto();
-
                 Log.i(TAG, "Received gallery items list objects: " + mItems);
 
                 Log.i(TAG, "Getting response: " + mItems);
                 mAdapter.updatePhotoGallery(mItems);
+
+                Log.i(TAG, String.format("Load %s page", currentPage));
+                loading = true;
             }
 
             @Override
