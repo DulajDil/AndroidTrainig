@@ -26,11 +26,11 @@ public class PhotoGalleryFragment extends Fragment{
     private RecyclerView mPhotoRecyclerView;
     private List<GalleryItem> mItems = new ArrayList<>();
 
-    int visibleItemCount;
-    int totalItemCount;
-    int firstVisibleItemPosition;
-    int currentPage = 1;
-    private int previousTotal = 80;
+    private int visibleItemCount;
+    private int totalItemCount;
+    private int firstVisibleItemPosition;
+    private int lastVisibleItemPosition;
+    private int currentPage = 1;
     private boolean loading = true;
 
     public static PhotoGalleryFragment newInstance() {
@@ -60,36 +60,20 @@ public class PhotoGalleryFragment extends Fragment{
                 visibleItemCount = layoutManager.getChildCount();
                 totalItemCount = layoutManager.getItemCount();
                 firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-
-                List<GalleryItem> collect = mItems.stream()
-                        .filter(galleryItem -> galleryItem.getUrl().length() != 0).collect(Collectors.toList());
-                List<String> collect2 = mItems.stream().map(GalleryItem::getUrl).collect(Collectors.toList());
-
-                int i = 0;
-                for (String x:collect2) {
-                    i++;
-                    Log.i(TAG, "Url: " + i + " : " + x);
-                }
+                lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
 
                 if (loading) {
-                    if (dy > 0) {
-                        Log.i(TAG, "Collect: " + collect.size());
-                        Log.i(TAG, "Collect2: " + collect2.size());
-                        Log.i(TAG, "Visible item count " + visibleItemCount);
+                    if (lastVisibleItemPosition ==  totalItemCount - 1) {
+                        loading = false;
+                        currentPage++;
                         Log.i(TAG, "Total item count " + totalItemCount);
-                        Log.i(TAG, "First visible item count " + firstVisibleItemPosition);
+                        Log.i(TAG, "Last visible item count position " + lastVisibleItemPosition);
+                        new FetchItemsTask().execute(currentPage);
+                        setupAdapter();
                     }
-//                    currentPage++;
-//                    loading = false;
-//                    new FetchItemsTask().execute(currentPage);
-                    Log.i(TAG, String.format("Load %s page", currentPage));
-//                    setupAdapter();
                 }
             }
         });
-
-
-
         return v;
     }
 
@@ -155,8 +139,16 @@ public class PhotoGalleryFragment extends Fragment{
 
         @Override
         protected void onPostExecute(List<GalleryItem> items) {
-            mItems = items;
+            if (currentPage > 1) {
+                for (int i = 0; i < items.size(); i++) {
+                    mItems.add(items.get(i));
+                }
+            } else {
+                mItems = items;
+            }
             setupAdapter();
+            Log.i(TAG, String.format("Load %s page", currentPage));
+            loading = true;
         }
     }
 }

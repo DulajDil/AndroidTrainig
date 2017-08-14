@@ -36,7 +36,7 @@ public class PhotoGalleryFragment2 extends Fragment {
 
     private List<GalleryItem> mItems = new ArrayList<>();
 
-    int visibleItemCount;
+    private int visibleItemCount;
     private int totalItemCount;
     private int firstVisibleItemPosition;
     private int lastVisibleItemPosition;
@@ -75,7 +75,6 @@ public class PhotoGalleryFragment2 extends Fragment {
                 totalItemCount = layoutManager.getItemCount();
                 firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
                 lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-
 
                 if (loading) {
                     if (lastVisibleItemPosition ==  totalItemCount - 1) {

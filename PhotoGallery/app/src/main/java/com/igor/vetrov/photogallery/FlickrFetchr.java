@@ -63,9 +63,10 @@ public class FlickrFetchr {
                 .appendQueryParameter("format", "json")
                 .appendQueryParameter("nojsoncallback", "1")
                 .appendQueryParameter("extras", "url_s")
-                .appendQueryParameter("page ", String.valueOf(i))
+                .appendQueryParameter("page", String.valueOf(i))
                 .build()
                 .toString();
+        Log.i(TAG, "URl to request: " + url);
         try {
             String jsonString = getUrlString(url);
             Log.i(TAG, "Received JSON: " + jsonString);
