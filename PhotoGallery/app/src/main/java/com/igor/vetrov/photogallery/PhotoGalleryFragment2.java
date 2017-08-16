@@ -58,6 +58,8 @@ public class PhotoGalleryFragment2 extends Fragment {
         View v = inflater.inflate(R.layout.fragment_photo_gallery, conteiner, false);
         mPhotoRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_photo_gallery_recycler_view);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
+        layoutManager.f();
+        Log.i(TAG, "Span size: " + spanSize);
         mPhotoRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new PhotoGalleryFragment2.PhotoAdapter(mItems);
         mPhotoRecyclerView.setAdapter(mAdapter);
@@ -183,9 +185,10 @@ public class PhotoGalleryFragment2 extends Fragment {
     }
 
     private void updateView() {
-        ViewTreeObserver vto = mPhotoRecyclerView.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(() ->
-                mPhotoRecyclerView.getWidth();
-        });
+
+//        ViewTreeObserver vto = mPhotoRecyclerView.getViewTreeObserver();
+//        vto.addOnGlobalLayoutListener(() ->
+//                mPhotoRecyclerView.getWidth();
+//        });
     }
 }
