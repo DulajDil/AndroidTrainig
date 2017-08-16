@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.igor.vetrov.photogallery.model.GalleryItem;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -78,6 +78,11 @@ public class PhotoGalleryFragment2 extends Fragment {
                         currentPage++;
                         Log.i(TAG, "Total item count " + totalItemCount);
                         Log.i(TAG, "Last visible item count position " + lastVisibleItemPosition);
+
+
+                        layoutManager.setSpanCount(4);
+//                        layoutManager.ge
+
                         loadPhotoGalleryItems();
                     }
                 }
@@ -175,5 +180,12 @@ public class PhotoGalleryFragment2 extends Fragment {
             mGalleryItems = items;
             notifyDataSetChanged();
         }
+    }
+
+    private void updateView() {
+        ViewTreeObserver vto = mPhotoRecyclerView.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(() ->
+                mPhotoRecyclerView.getWidth();
+        });
     }
 }

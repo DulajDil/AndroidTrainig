@@ -1,11 +1,6 @@
 package com.igor.vetrov.photogallery;
 
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> origin/master
 public class FlickrFetchr2 {
 
     public static final String API_KEY = "d906a0a1c11d014f5e124352d8f926b7";
