@@ -33,6 +33,7 @@ public class PhotoGalleryFragment2 extends Fragment {
 
     private RecyclerView mPhotoRecyclerView;
     private PhotoAdapter mAdapter;
+    private GridLayoutManager mLayoutManager;
 
     private List<GalleryItem> mItems = new ArrayList<>();
 
@@ -57,10 +58,9 @@ public class PhotoGalleryFragment2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup conteiner, Bundle savedInstance) {
         View v = inflater.inflate(R.layout.fragment_photo_gallery, conteiner, false);
         mPhotoRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_photo_gallery_recycler_view);
-        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
-        layoutManager.f();
-        Log.i(TAG, "Span size: " + spanSize);
-        mPhotoRecyclerView.setLayoutManager(layoutManager);
+        mLayoutManager = new GridLayoutManager(getActivity(), 3);
+        updateView();
+        mPhotoRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new PhotoGalleryFragment2.PhotoAdapter(mItems);
         mPhotoRecyclerView.setAdapter(mAdapter);
 
@@ -71,8 +71,8 @@ public class PhotoGalleryFragment2 extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                totalItemCount = layoutManager.getItemCount();
-                lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+                totalItemCount = mLayoutManager.getItemCount();
+                lastVisibleItemPosition = mLayoutManager.findLastVisibleItemPosition();
 
                 if (loading) {
                     if (lastVisibleItemPosition ==  totalItemCount - 1) {
@@ -82,7 +82,7 @@ public class PhotoGalleryFragment2 extends Fragment {
                         Log.i(TAG, "Last visible item count position " + lastVisibleItemPosition);
 
 
-                        layoutManager.setSpanCount(4);
+                        mLayoutManager.setSpanCount(4);
 //                        layoutManager.ge
 
                         loadPhotoGalleryItems();
@@ -185,10 +185,23 @@ public class PhotoGalleryFragment2 extends Fragment {
     }
 
     private void updateView() {
-
-//        ViewTreeObserver vto = mPhotoRecyclerView.getViewTreeObserver();
-//        vto.addOnGlobalLayoutListener(() ->
-//                mPhotoRecyclerView.getWidth();
-//        });
+        ViewTreeObserver vto = mPhotoRecyclerView.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener(){
+            @Override
+            public void onGlobalLayout() {
+                int spanSize = mLayoutManager.getSpanSizeLookup().getSpanSize(1);
+                int height = mLayoutManager.getHeight();
+                Log.i(TAG, String.format("height size: %s", height));
+                int height2 = mPhotoRecyclerView.getHeight();
+                mPhotoRecyclerView.getChildLayoutPosition()
+                Log.i(TAG, String.format("height2 size: %s", height2));
+                Log.i(TAG, String.format("Span size: %s", spanSize));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    mPhotoRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    mPhotoRecyclerView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
     }
 }
