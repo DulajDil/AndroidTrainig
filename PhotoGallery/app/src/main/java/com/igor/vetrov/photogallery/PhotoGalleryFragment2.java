@@ -190,12 +190,7 @@ public class PhotoGalleryFragment2 extends Fragment {
             @Override
             public void onGlobalLayout() {
                 int spanSize = mLayoutManager.getSpanSizeLookup().getSpanSize(1);
-                int height = mLayoutManager.getHeight();
-                Log.i(TAG, String.format("height size: %s", height));
-                int height2 = mPhotoRecyclerView.getHeight();
-                mPhotoRecyclerView.getChildLayoutPosition()
-                Log.i(TAG, String.format("height2 size: %s", height2));
-                Log.i(TAG, String.format("Span size: %s", spanSize));
+                Log.i("Span size: " + spanSize)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     mPhotoRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
