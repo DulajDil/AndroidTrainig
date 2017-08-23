@@ -206,18 +206,10 @@ public class PhotoGalleryFragment2 extends Fragment {
 
                 int width = mLayoutManager.getWidth();
                 Log.i(TAG, String.format("width size: %s", width));
-
-                int spanSize = mLayoutManager.getSpanSizeLookup().getSpanSize(1);
-<<<<<<< HEAD
-                Log.i("Span size: " + spanSize)
-=======
-                Log.i(TAG, String.format("Span size: %s", spanSize));
-
                 if (width > 1080) {
                     mLayoutManager.setSpanCount(4);
                 }
 
->>>>>>> origin/master
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     mPhotoRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
