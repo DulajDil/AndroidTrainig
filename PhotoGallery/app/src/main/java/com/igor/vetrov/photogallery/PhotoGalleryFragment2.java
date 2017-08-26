@@ -20,6 +20,8 @@ import com.igor.vetrov.photogallery.model.GalleryItem;
 import com.igor.vetrov.photogallery.model.Photos;
 import com.igor.vetrov.photogallery.model.ResponsePhotogallery;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -183,8 +185,14 @@ public class PhotoGalleryFragment2 extends Fragment {
         @Override
         public void onBindViewHolder(PhotoGalleryFragment2.PhotoHolder photoHolder, int position) {
             GalleryItem galleryItem = mGalleryItems.get(position);
-            Drawable placeholder = getResources().getDrawable(R.drawable.anime_load_photo);
+            Drawable placeholder;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                placeholder = getResources().getDrawable(R.drawable.anime_load_photo, getActivity().getTheme());
+            } else {
+                placeholder = getResources().getDrawable(R.drawable.anime_load_photo);
+            }
             photoHolder.bindDrawable(placeholder);
+            mThumbnailDownloader.queueThumnail(photoHolder, galleryItem.getUrl());
         }
 
         @Override
@@ -207,7 +215,8 @@ public class PhotoGalleryFragment2 extends Fragment {
                 int width = mLayoutManager.getWidth();
                 Log.i(TAG, String.format("width size: %s", width));
                 if (width > 1080) {
-                    mLayoutManager.setSpanCount(4);
+                    int count = new BigDecimal((double) width / 360).setScale(0, RoundingMode.UP).intValue();
+                    mLayoutManager.setSpanCount(count);
                 }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
