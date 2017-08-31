@@ -50,9 +50,6 @@ public class ThumbnailDownloader<T> extends HandlerThread {
                     Log.i(TAG, "Got a request for URL: " +
                     mRequestMap.get(target));
                     handleRequest(target);
-                } else if (msg.what == MESSAGE_PRELOAD) {
-                    String url = (String) msg.obj;
-                    cacheLoad(url);
                 }
             }
         };
@@ -63,6 +60,7 @@ public class ThumbnailDownloader<T> extends HandlerThread {
             byte[] bitmapBytes = new FlickrFetchr().getUrlBytes(url);
             final Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
             Log.i(TAG, "Bitmap created");
+            return bitmap;
         } catch (IOException ioe) {
             Log.e(TAG, "Error downloading image", ioe);
         }
@@ -82,7 +80,9 @@ public class ThumbnailDownloader<T> extends HandlerThread {
         if (url == null) {
             return;
         }
-        cacheLoad(url);
+        if (mCache.get(url) == null) {
+            cacheLoad(url);
+        }
         final Bitmap bitmap = mCache.get(url);
 
         mResponseHandler.post(new Runnable() {
