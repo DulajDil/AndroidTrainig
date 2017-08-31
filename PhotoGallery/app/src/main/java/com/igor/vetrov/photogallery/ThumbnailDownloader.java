@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.support.v4.util.LruCache;
 import android.util.Log;
 
 import java.io.IOException;
@@ -17,10 +18,13 @@ public class ThumbnailDownloader<T> extends HandlerThread {
 
     private static final String TAG = "ThumbnailDownloader";
     private static final int MESSAGE_DOWNLOAD = 0;
+    private static final int MESSAGE_PRELOAD = 1;
+    private static final int CACHE_SIZE = 400;
     private Handler mRequestHandler;
     private ConcurrentMap<T,String> mRequestMap = new ConcurrentHashMap<>();
     private Handler mResponseHandler;
     private ThumbnailDownloadListener<T> mThumbnailDownloadListener;
+    private LruCache<String, Bitmap> mCache;
 
     public interface ThumbnailDownloadListener<T> {
         void onThumbnailDownloaded(T target, Bitmap thumbnail);
@@ -33,6 +37,7 @@ public class ThumbnailDownloader<T> extends HandlerThread {
     public ThumbnailDownloader(Handler responseHandle) {
         super(TAG);
         mResponseHandler = responseHandle;
+        mCache = new LruCache<>(CACHE_SIZE);
     }
 
     @Override
@@ -45,32 +50,50 @@ public class ThumbnailDownloader<T> extends HandlerThread {
                     Log.i(TAG, "Got a request for URL: " +
                     mRequestMap.get(target));
                     handleRequest(target);
+                } else if (msg.what == MESSAGE_PRELOAD) {
+                    String url = (String) msg.obj;
+                    cacheLoad(url);
                 }
             }
         };
     }
 
-    private void handleRequest(T target) {
+    private Bitmap getBitmap(String url) {
         try {
-            final String url = mRequestMap.get(target);
-            if (url == null) {
-                return;
-            }
             byte[] bitmapBytes = new FlickrFetchr().getUrlBytes(url);
             final Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
             Log.i(TAG, "Bitmap created");
-            mResponseHandler.post(new Runnable() {
-                public void run() {
-                    if (mRequestMap.get(target) != url) {
-                        return;
-                    }
-                    mRequestMap.remove(target);
-                    mThumbnailDownloadListener.onThumbnailDownloaded(target, bitmap);
-                }
-            });
         } catch (IOException ioe) {
             Log.e(TAG, "Error downloading image", ioe);
         }
+        return null;
+    }
+
+    private void cacheLoad(String url) {
+        if (url == null) {
+            return;
+        }
+        Bitmap bitmap = getBitmap(url);
+        mCache.put(url, bitmap);
+    }
+
+    private void handleRequest(T target) {
+        final String url = mRequestMap.get(target);
+        if (url == null) {
+            return;
+        }
+        cacheLoad(url);
+        final Bitmap bitmap = mCache.get(url);
+
+        mResponseHandler.post(new Runnable() {
+            public void run () {
+                if (mRequestMap.get(target) != url) {
+                    return;
+                }
+                mRequestMap.remove(target);
+                mThumbnailDownloadListener.onThumbnailDownloaded(target, bitmap);
+            }
+        });
     }
 
     public void clearQueue() {
@@ -83,7 +106,9 @@ public class ThumbnailDownloader<T> extends HandlerThread {
             mRequestMap.remove(target);
         } else {
             mRequestMap.put(target, url);
-            mRequestHandler.obtainMessage(MESSAGE_DOWNLOAD, target).sendToTarget();
+            mRequestHandler
+                    .obtainMessage(MESSAGE_DOWNLOAD, target)
+                    .sendToTarget();
         }
     }
 }
