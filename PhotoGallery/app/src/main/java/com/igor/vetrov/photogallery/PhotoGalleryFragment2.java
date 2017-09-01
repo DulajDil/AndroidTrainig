@@ -83,7 +83,7 @@ public class PhotoGalleryFragment2 extends Fragment {
         mLayoutManager = new GridLayoutManager(getActivity(), 3);
         updateView();
         mPhotoRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new PhotoGalleryFragment2.PhotoAdapter(mItems);
+        mAdapter = new PhotoAdapter(mItems);
         mPhotoRecyclerView.setAdapter(mAdapter);
 
         loadPhotoGalleryItems();

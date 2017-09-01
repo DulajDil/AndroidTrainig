@@ -31,6 +31,7 @@ public class PhotoGalleryFragment extends Fragment{
     private static final String TAG = "PhotoGalleryFragment";
 
     private RecyclerView mPhotoRecyclerView;
+    private PhotoAdapter mAdapter;
     private List<GalleryItem> mItems = new ArrayList<>();
     private ThumbnailDownloader<PhotoHolder> mThumbnailDownloader;
 
@@ -40,6 +41,8 @@ public class PhotoGalleryFragment extends Fragment{
     private int lastVisibleItemPosition;
     private int currentPage = 1;
     private boolean loading = true;
+
+
     public static PhotoGalleryFragment newInstance() {
         return new PhotoGalleryFragment();
     }
@@ -74,6 +77,7 @@ public class PhotoGalleryFragment extends Fragment{
         mLayoutManager = new GridLayoutManager(getActivity(), 3);
         updateView();
         mPhotoRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new PhotoAdapter(mItems);
         setupAdapter();
 
         mPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -114,7 +118,7 @@ public class PhotoGalleryFragment extends Fragment{
 
     private void setupAdapter() {
         if (isAdded()) {
-            mPhotoRecyclerView.setAdapter(new PhotoAdapter(mItems));
+            mPhotoRecyclerView.setAdapter(mAdapter);
         }
     }
 
@@ -165,6 +169,11 @@ public class PhotoGalleryFragment extends Fragment{
         public int getItemCount() {
             return mGalleryItems.size();
         }
+
+        public void updatePhotoGallery(List<GalleryItem> items) {
+            mGalleryItems = items;
+            notifyDataSetChanged();
+        }
     }
 
     private class FetchItemsTask extends AsyncTask<Integer, Void, List<GalleryItem>> {
@@ -184,14 +193,16 @@ public class PhotoGalleryFragment extends Fragment{
 
         @Override
         protected void onPostExecute(List<GalleryItem> items) {
-            if (currentPage > 1) {
+            if (currentPage == 1) {
+                mItems = items;
+//                setupAdapter();
+            } else {
                 for (int i = 0; i < items.size(); i++) {
                     mItems.add(items.get(i));
                 }
-            } else {
-                mItems = items;
+//                mAdapter.updatePhotoGallery(mItems);
             }
-            setupAdapter();
+            mAdapter.updatePhotoGallery(mItems);
             Log.i(TAG, String.format("Load %s page", currentPage));
             loading = true;
         }
