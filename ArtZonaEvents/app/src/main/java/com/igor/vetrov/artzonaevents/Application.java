@@ -3,10 +3,12 @@ package com.igor.vetrov.artzonaevents;
 
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
 import com.vk.sdk.VKSdk;
+import com.vk.sdk.util.VKUtil;
 
 public class Application extends android.app.Application{
 

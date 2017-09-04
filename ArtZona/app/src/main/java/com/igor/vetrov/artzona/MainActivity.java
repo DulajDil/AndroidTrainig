@@ -29,12 +29,9 @@ public class MainActivity extends Activity {
         mImageView.setImageResource(R.drawable.cover_art_zona);
 
         mLogin = (Button) findViewById(R.id.login_with_username);
-        mLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, VkLoginActivity.class);
-                startActivity(intent);
-            }
+        mLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, VkLoginActivity.class);
+            startActivity(intent);
         });
     }
 }
