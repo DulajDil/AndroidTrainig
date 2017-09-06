@@ -5,11 +5,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.igor.vetrov.artzonaevents.database.VkBaseHelper;
 import com.igor.vetrov.artzonaevents.database.VkCursorWrapper;
 import com.igor.vetrov.artzonaevents.database.VkDbSchema;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class TokenLab {
@@ -19,6 +22,10 @@ public class TokenLab {
     private Context mContext;
     private SQLiteDatabase mDatabase;
 
+<<<<<<< HEAD
+=======
+    private static final String TAG = "TokenLab";
+>>>>>>> origin/master
 
     public static TokenLab get(Context context) {
         if (sTokenLab == null) {
@@ -37,8 +44,36 @@ public class TokenLab {
         mDatabase.insert(VkDbSchema.TokenTable.NAME, null, values);
     }
 
+<<<<<<< HEAD
     public void deleteToken() {
         mDatabase.delete(VkDbSchema.TokenTable.NAME, VkDbSchema.TokenTable.Cols.ID + " = ?", new String[] { String.valueOf(1) });
+=======
+    public void deleteTokens() {
+        List<String> tokens = new ArrayList<>();
+        VkCursorWrapper cursor = queryCrimes(null, null);
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                String token = cursor.getToken().getToken();
+                tokens.add(token);
+                Log.w(TAG, "Get token string: " + token);
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+
+        for (String t: tokens) {
+            deleteToken(t);
+        }
+    }
+
+    public void deleteToken (String token) {
+        mDatabase.delete(
+                VkDbSchema.TokenTable.NAME,
+                VkDbSchema.TokenTable.Cols.TOKEN + " = ?",
+                new String[] {token});
+>>>>>>> origin/master
     }
 
     public void updateToken(Token t) {
@@ -56,7 +91,6 @@ public class TokenLab {
         } finally {
             cursor.close();
         }
-
         return token;
     }
 

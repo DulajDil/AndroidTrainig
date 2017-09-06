@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResId());
+<<<<<<< HEAD
         VKSdk.login(this, scope);
 //
 //        TokenLab.get(this).getToken();
@@ -44,6 +45,17 @@ public class MainActivity extends AppCompatActivity {
 //        Log.w(TAG, "Token: " + token);
 
 //        TokenLab.get(this).deleteToken();
+=======
+
+//        String[] fingerprints = VKUtil.getCertificateFingerprint(this, this.getPackageName()); // получение отпечатка через sdk
+
+//        VKSdk.login(this, scope);
+
+//        TokenLab.get(this).deleteTokens();
+
+        String token = TokenLab.get(this).getToken().getToken();
+        Log.w(TAG, "Token: " + token);
+>>>>>>> origin/master
 
 //        FragmentManager fm = getSupportFragmentManager();
 //        Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
@@ -60,14 +72,14 @@ public class MainActivity extends AppCompatActivity {
             public void onResult(VKAccessToken res) {
                 access_token = res;
                 String accessToken = access_token.accessToken;
-                Log.i(TAG, String.format("access_token: %s", accessToken));
+                Log.w(TAG, String.format("access_token: %s", accessToken));
                 // успешная авторизация
                 TokenLab.get(getApplicationContext()).addToken(new Token().setToken(accessToken));
             }
             @Override
             public void onError(VKError error) {
                 // ошибка авторизации
-                Toast.makeText(getApplicationContext(), "ОШИБКА АВТОРИЗАЦИИ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "AUTHORIZATION ERROR", Toast.LENGTH_SHORT).show();
             }
         })) {
             super.onActivityResult(requestCode, resultCode, data);
