@@ -14,9 +14,11 @@ import com.igor.vetrov.artzonaevents.database.VkDbSchema;
 
 public class TokenLab {
 
+
     private static TokenLab sTokenLab;
     private Context mContext;
     private SQLiteDatabase mDatabase;
+
 
     public static TokenLab get(Context context) {
         if (sTokenLab == null) {
@@ -35,7 +37,7 @@ public class TokenLab {
         mDatabase.insert(VkDbSchema.TokenTable.NAME, null, values);
     }
 
-    public void deleteCrime() {
+    public void deleteToken() {
         mDatabase.delete(VkDbSchema.TokenTable.NAME, VkDbSchema.TokenTable.Cols.ID + " = ?", new String[] { String.valueOf(1) });
     }
 

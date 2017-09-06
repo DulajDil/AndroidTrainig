@@ -3,9 +3,6 @@ package com.igor.vetrov.artzonaevents;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -15,7 +12,6 @@ import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
-import com.vk.sdk.util.VKUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,10 +30,20 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResId());
-//        VKSdk.login(this, scope);
+        VKSdk.login(this, scope);
+//
+//        TokenLab.get(this).getToken();
+//
+//        String token = null;
+//        try {
+//            token = TokenLab.get(this).getToken().getToken();
+//        } catch (RuntimeException e) {
+//
+//        }
 
-        String token = TokenLab.get(this).getToken().getToken();
-        Log.w(TAG, "Token: " + token);
+//        Log.w(TAG, "Token: " + token);
+
+//        TokenLab.get(this).deleteToken();
 
 //        FragmentManager fm = getSupportFragmentManager();
 //        Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
