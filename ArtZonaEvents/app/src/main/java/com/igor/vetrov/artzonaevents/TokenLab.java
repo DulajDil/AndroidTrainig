@@ -21,11 +21,8 @@ public class TokenLab {
     private static TokenLab sTokenLab;
     private Context mContext;
     private SQLiteDatabase mDatabase;
-
-<<<<<<< HEAD
-=======
     private static final String TAG = "TokenLab";
->>>>>>> origin/master
+
 
     public static TokenLab get(Context context) {
         if (sTokenLab == null) {
@@ -42,30 +39,7 @@ public class TokenLab {
     public void addToken(Token t) {
         ContentValues values = getContentValues(t);
         mDatabase.insert(VkDbSchema.TokenTable.NAME, null, values);
-    }
-
-<<<<<<< HEAD
-    public void deleteToken() {
-        mDatabase.delete(VkDbSchema.TokenTable.NAME, VkDbSchema.TokenTable.Cols.ID + " = ?", new String[] { String.valueOf(1) });
-=======
-    public void deleteTokens() {
-        List<String> tokens = new ArrayList<>();
-        VkCursorWrapper cursor = queryCrimes(null, null);
-        try {
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                String token = cursor.getToken().getToken();
-                tokens.add(token);
-                Log.w(TAG, "Get token string: " + token);
-                cursor.moveToNext();
-            }
-        } finally {
-            cursor.close();
-        }
-
-        for (String t: tokens) {
-            deleteToken(t);
-        }
+        Log.w(TAG, String.format("Adding token to: %s", t.getToken()));
     }
 
     public void deleteToken (String token) {
@@ -73,28 +47,43 @@ public class TokenLab {
                 VkDbSchema.TokenTable.NAME,
                 VkDbSchema.TokenTable.Cols.TOKEN + " = ?",
                 new String[] {token});
->>>>>>> origin/master
+    }
+
+    public void deleteTokens() {
+        for (Token t: getTokens()) {
+            deleteToken(t.getToken());
+        }
+    }
+
+    public List<Token> getTokens() {
+        VkCursorWrapper cursor = queryTokens(null, null);
+        List<Token> tokens = new ArrayList<>();
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                Token token = cursor.getToken();
+                tokens.add(token);
+                Log.w(TAG, "Get token string: " + token.getToken());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return tokens;
     }
 
     public void updateToken(Token t) {
         String id = String.valueOf(t.getId());
         ContentValues values = getContentValues(t);
-        mDatabase.update(VkDbSchema.TokenTable.NAME, values, VkDbSchema.TokenTable.Cols.ID + " = ?", new String[] {id});
+        mDatabase.update(
+                VkDbSchema.TokenTable.NAME,
+                values,
+                VkDbSchema.TokenTable.Cols.ID + " = ?",
+                new String[] {"1"});
+        Log.w(TAG, String.format("Update token to: %s", t.getToken()));
     }
 
-    public Token getToken() {
-        Token token = null;
-        VkCursorWrapper cursor = queryCrimes(null, null);
-        try {
-            cursor.moveToFirst();
-            token = cursor.getToken();
-        } finally {
-            cursor.close();
-        }
-        return token;
-    }
-
-    private VkCursorWrapper queryCrimes(String whereClause, String[] whereArgs) {
+    private VkCursorWrapper queryTokens(String whereClause, String[] whereArgs) {
         Cursor cursor = mDatabase.query(
                 VkDbSchema.TokenTable.NAME,
                 null, // Columns - null выбирает все столбцы

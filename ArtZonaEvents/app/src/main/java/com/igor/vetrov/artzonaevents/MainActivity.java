@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResId());
-<<<<<<< HEAD
         VKSdk.login(this, scope);
 //
 //        TokenLab.get(this).getToken();
@@ -45,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
 //        Log.w(TAG, "Token: " + token);
 
 //        TokenLab.get(this).deleteToken();
-=======
 
 //        String[] fingerprints = VKUtil.getCertificateFingerprint(this, this.getPackageName()); // получение отпечатка через sdk
 
@@ -53,9 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
 //        TokenLab.get(this).deleteTokens();
 
-        String token = TokenLab.get(this).getToken().getToken();
-        Log.w(TAG, "Token: " + token);
->>>>>>> origin/master
+//        String token = TokenLab.get(this).getToken().getToken();
+//        Log.w(TAG, "Token: " + token);
 
 //        FragmentManager fm = getSupportFragmentManager();
 //        Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
@@ -74,7 +71,12 @@ public class MainActivity extends AppCompatActivity {
                 String accessToken = access_token.accessToken;
                 Log.w(TAG, String.format("access_token: %s", accessToken));
                 // успешная авторизация
-                TokenLab.get(getApplicationContext()).addToken(new Token().setToken(accessToken));
+                if (TokenLab.get(getApplicationContext()).getTokens().size() >= 1) {
+                    TokenLab.get(getApplicationContext()).updateToken(new Token().setToken(accessToken));
+                } else  {
+                    TokenLab.get(getApplicationContext()).addToken(new Token().setToken(accessToken));
+                }
+                Log.w(TAG, "Read token table, count size: " + TokenLab.get(getApplicationContext()).getTokens().size());
             }
             @Override
             public void onError(VKError error) {
