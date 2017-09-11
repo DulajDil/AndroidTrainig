@@ -55,6 +55,10 @@ public class TokenLab {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Token> getTokens() {
         VkCursorWrapper cursor = queryTokens(null, null);
         List<Token> tokens = new ArrayList<>();
@@ -74,13 +78,14 @@ public class TokenLab {
 
     public void updateToken(Token t) {
         String id = String.valueOf(t.getId());
+        String token = t.getToken();
         ContentValues values = getContentValues(t);
         mDatabase.update(
                 VkDbSchema.TokenTable.NAME,
                 values,
-                VkDbSchema.TokenTable.Cols.ID + " = ?",
-                new String[] {"1"});
-        Log.w(TAG, String.format("Update token to: %s", t.getToken()));
+                VkDbSchema.TokenTable.Cols.ID + " = " + id,
+                null);
+        Log.w(TAG, String.format("Update token to: %s", token));
     }
 
     private VkCursorWrapper queryTokens(String whereClause, String[] whereArgs) {
