@@ -3,6 +3,8 @@ package com.igor.vetrov.artzonaevents;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,7 +18,6 @@ import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import okhttp3.ResponseBody;
@@ -24,11 +25,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-
     private RetrofitClient mService;
+
     private VKAccessToken access_token;
     public static String[] scope = new String[] {
             VKScope.GROUPS, VKScope.MESSAGES, VKScope.FRIENDS
@@ -44,54 +46,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResId());
 
-        mService = VkClient.getClient();
-
-        Map<String, String> params = new HashMap<>();
-        params.put("token", TokenLab.get(getApplicationContext()).getTokens().get(0).getToken());
-        Call<ResponseBody> call = mService.checkToken(params);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                Log.i(TAG, "URL to request: " + call.request().url());
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e(TAG, "Failed getting photogallery", t);
-            }
-        });
-
-//        VKSdk.login(this, scope);
-//
-//        TokenLab.get(this).getToken();
-//
-//        String token = null;
-//        try {
-//            token = TokenLab.get(this).getToken().getToken();
-//        } catch (RuntimeException e) {
-//
-//        }
-
-//        Log.w(TAG, "Token: " + token);
-
-//        TokenLab.get(this).deleteToken();
-
-//        String[] fingerprints = VKUtil.getCertificateFingerprint(this, this.getPackageName()); // получение отпечатка через sdk
-
-//        VKSdk.login(this, scope);
-
-//        TokenLab.get(this).deleteTokens();
-
-//        String token = TokenLab.get(this).getToken().getToken();
-//        Log.w(TAG, "Token: " + token);
-
-//        FragmentManager fm = getSupportFragmentManager();
-//        Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
-//        if (fragment == null) {
-//            fragment = VkLoginFragment.newInstance();
-//            fm.beginTransaction().add(R.id.fragmentContainer, fragment).commit();
-//        }
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
+        if (fragment == null) {
+            fragment = VkLoginFragment.newInstance();
+            fm.beginTransaction().add(R.id.fragmentContainer, fragment).commit();
+        }
     }
 
     @Override
