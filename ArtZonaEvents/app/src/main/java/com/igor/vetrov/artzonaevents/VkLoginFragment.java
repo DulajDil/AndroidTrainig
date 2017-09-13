@@ -10,7 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+<<<<<<< HEAD
 import com.igor.vetrov.artzonaevents.rest_client.ClientRetrofit;
+=======
+>>>>>>> origin/master
 import com.igor.vetrov.artzonaevents.rest_client.RetrofitClient;
 import com.igor.vetrov.artzonaevents.rest_client.VkClient;
 import com.vk.sdk.VKAccessToken;
@@ -20,8 +23,12 @@ import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 import com.vk.sdk.util.VKUtil;
 
+<<<<<<< HEAD
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+=======
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,8 +37,19 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.vk.sdk.VKUIHelper.getApplicationContext;
+
+>>>>>>> origin/master
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class VkLoginFragment extends Fragment {
+
+    private RetrofitClient mService;
 
     private static final String TAG = "VkLoginFragment";
     private VKAccessToken access_token;
@@ -43,6 +61,7 @@ public class VkLoginFragment extends Fragment {
 
     public static VkLoginFragment newInstance() {
         VkLoginFragment fragment = new VkLoginFragment();
+
         return fragment;
     }
 
@@ -50,6 +69,7 @@ public class VkLoginFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+<<<<<<< HEAD
 
         mService = VkClient.getClient();
 
@@ -76,11 +96,24 @@ public class VkLoginFragment extends Fragment {
         return v;
     }
 
+=======
+        mService = VkClient.getClient();
+    }
+
+>>>>>>> origin/master
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Toast.makeText(getActivity().getApplicationContext(), "БЕЗ ПРОВЕРКИ АВТОРИЗАЦИИ", Toast.LENGTH_SHORT).show();
-        if (!VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
+    public View onCreateView(LayoutInflater inflater, ViewGroup conteiner, Bundle savedInstance) {
+        View v = inflater.inflate(R.layout.login_fragment, conteiner, false);
+        v.findViewById(R.id.fragmentContainer2);
+
+        VKSdk.login(getActivity(), scope);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", TokenLab.get(getActivity()).getTokens().get(0).getToken());
+        Call<ResponseBody> call = mService.checkToken(params);
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
+<<<<<<< HEAD
             public void onResult(VKAccessToken res) {
                 // успешная авторизация
                 Toast.makeText(getActivity().getApplicationContext(), "ВЫ АВТОРИЗОВАЛИСЬ", Toast.LENGTH_SHORT).show();
@@ -94,15 +127,19 @@ public class VkLoginFragment extends Fragment {
                     TokenLab.get(getActivity()).addToken(new Token().setToken(accessToken));
                 }
                 Log.w(TAG, "Read token table, count size: " + TokenLab.get(getActivity()).getTokens().size());
+=======
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                Log.i(TAG, "URL to request: " + call.request().url());
+>>>>>>> origin/master
             }
+
             @Override
-            public void onError(VKError error) {
-                // ошибка авторизации
-                Toast.makeText(getActivity().getApplicationContext(), "ОШИБКА АВТОРИЗАЦИИ", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e(TAG, "Failed getting photogallery", t);
             }
-        })) {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
+        });
+        return v;
     }
 
     private void checkToken() {
