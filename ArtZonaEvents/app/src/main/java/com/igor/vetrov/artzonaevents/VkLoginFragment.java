@@ -65,13 +65,13 @@ public class VkLoginFragment extends Fragment {
         View v = inflater.inflate(R.layout.login_fragment, conteiner, false);
         v.findViewById(R.id.fragmentContainer2);
 
-        if (TokenLab.get(getActivity()).getTokens().size() >= 1) {
-            checkToken();
-        } else {
-            logout = true;
-        }
+//        if (TokenLab.get(getActivity()).getTokens().size() >= 1) {
+//            checkToken();
+//        } else {
+//            logout = true;
+//        }
 
-        if (logout) {
+        if (!logout) {
             VKSdk.login(this, scope);
         }
 
@@ -94,6 +94,7 @@ public class VkLoginFragment extends Fragment {
                     TokenLab.get(getActivity()).addToken(new Token().setToken(accessToken));
                 }
                 Log.w(TAG, "Read token table, count size: " + TokenLab.get(getActivity()).getTokens().size());
+                checkToken();
             }
             @Override
             public void onError(VKError error) {

@@ -1,6 +1,8 @@
 package com.igor.vetrov.artzonaevents.rest_client;
 
 
+import com.igor.vetrov.artzonaevents.model.AccessToken;
+
 import java.util.Map;
 
 import okhttp3.ResponseBody;
@@ -14,4 +16,6 @@ public interface RetrofitClient {
     @GET("secure.checkToken")
     Call<ResponseBody> checkToken(@QueryMap Map<String, String> params);
 
+    @GET("")
+    Call<AccessToken> getKeyAccess(@QueryMap Map<String, String> params);
 }
