@@ -112,7 +112,7 @@ public class PhotoGalleryFragment extends Fragment{
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mThumbnailDownloader.quit();
+        mThumbnailDownloader.quit();  // завершение потока
         Log.i(TAG, "Background thread destroyed");
     }
 

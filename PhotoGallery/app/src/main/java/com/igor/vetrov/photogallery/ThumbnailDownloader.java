@@ -17,29 +17,46 @@ import java.util.concurrent.ConcurrentMap;
 public class ThumbnailDownloader<T> extends HandlerThread {
 
     private static final String TAG = "ThumbnailDownloader";
-    private static final int MESSAGE_DOWNLOAD = 0;
+    private static final int MESSAGE_DOWNLOAD = 0; // Индентификатор сообщений заропосв на загрузку
     private static final int MESSAGE_PRELOAD = 1;
     private static final int CACHE_SIZE = 400;
-    private Handler mRequestHandler;
+    private Handler mRequestHandler;  // объект Handler отвечает за постановку в очередь запрососов в фотовом потоке
+                                      // а так же за обработку сообщений при извлечении из очереди
     private ConcurrentMap<T,String> mRequestMap = new ConcurrentHashMap<>();
     private Handler mResponseHandler;
     private ThumbnailDownloadListener<T> mThumbnailDownloadListener;
-    private LruCache<String, Bitmap> mCache;
+    private LruCache<String, Bitmap> mCache;  // map кеша
 
+    /**
+     * создание слушателя на обработку изображения
+     * @param <T>
+     */
     public interface ThumbnailDownloadListener<T> {
         void onThumbnailDownloaded(T target, Bitmap thumbnail);
     }
 
+    /**
+     *
+     * @param listener
+     */
     public void setThumbnailDownloadListener(ThumbnailDownloadListener<T> listener) {
         mThumbnailDownloadListener = listener;
     }
 
+    /**
+     *
+     * @param responseHandle
+     */
     public ThumbnailDownloader(Handler responseHandle) {
         super(TAG);
         mResponseHandler = responseHandle;
         mCache = new LruCache<>(CACHE_SIZE);
     }
 
+    /**
+     * запись сообщений для выполнения
+     * what - описывающее сообщение
+     */
     @Override
     protected void onLooperPrepared() {
         mRequestHandler = new Handler() {
@@ -55,6 +72,11 @@ public class ThumbnailDownloader<T> extends HandlerThread {
         };
     }
 
+    /**
+     *
+     * @param url
+     * @return
+     */
     private Bitmap getBitmap(String url) {
         try {
             byte[] bitmapBytes = new FlickrFetchr().getUrlBytes(url);
@@ -67,6 +89,10 @@ public class ThumbnailDownloader<T> extends HandlerThread {
         return null;
     }
 
+    /**
+     * загрузка изображения в кеш
+     * @param url
+     */
     private void cacheLoad(String url) {
         if (url == null) {
             return;
@@ -75,15 +101,19 @@ public class ThumbnailDownloader<T> extends HandlerThread {
         mCache.put(url, bitmap);
     }
 
+    /**
+     * осуществление загрузки
+     * @param target
+     */
     private void handleRequest(T target) {
         final String url = mRequestMap.get(target);
-        if (url == null) {
+        if (url == null) {  // проверяем существования URL-а
             return;
         }
-        if (mCache.get(url) == null) {
+        if (mCache.get(url) == null) {  // проверяем в кеше значение с ключем по URl-у
             cacheLoad(url);
         }
-        final Bitmap bitmap = mCache.get(url);
+        final Bitmap bitmap = mCache.get(url);  // извлекаем из кеша изображение
 
         mResponseHandler.post(new Runnable() {
             public void run () {
@@ -91,15 +121,23 @@ public class ThumbnailDownloader<T> extends HandlerThread {
                     return;
                 }
                 mRequestMap.remove(target);
-                mThumbnailDownloadListener.onThumbnailDownloaded(target, bitmap);
+                mThumbnailDownloadListener.onThumbnailDownloaded(target, bitmap);  // передача загруженного изображения
             }
         });
     }
 
+    /**
+     *
+     */
     public void clearQueue() {
         mRequestHandler.removeMessages(MESSAGE_DOWNLOAD);
     }
 
+    /**
+     * получение сообщения и отправка приемнику
+     * @param target объект с типом T идентификатор загрузки
+     * @param url
+     */
     public void queueThumnail(T target, String url) {
         Log.i(TAG, "Got a URL: " + url);
         if (url == null) {
@@ -107,8 +145,8 @@ public class ThumbnailDownloader<T> extends HandlerThread {
         } else {
             mRequestMap.put(target, url);
             mRequestHandler
-                    .obtainMessage(MESSAGE_DOWNLOAD, target)
-                    .sendToTarget();
+                    .obtainMessage(MESSAGE_DOWNLOAD, target)  // назначаем применика без создания нового объекта Message
+                    .sendToTarget();  // отправка сообщения обработчику
         }
     }
 }
