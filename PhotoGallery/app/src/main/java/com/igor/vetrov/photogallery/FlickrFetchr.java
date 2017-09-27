@@ -27,6 +27,11 @@ public class FlickrFetchr {
     private static final String API_KEY = "d906a0a1c11d014f5e124352d8f926b7";
     private final String API_URL = "https://api.flickr.com/services/rest/";
 
+    /**
+     * @param urlSpec урл запроса картинок
+     * @return OutputStream байт
+     * @throws IOException
+     */
     public byte[] getUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();

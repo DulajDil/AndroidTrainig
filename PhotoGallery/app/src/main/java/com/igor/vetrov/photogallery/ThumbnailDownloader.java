@@ -20,10 +20,10 @@ public class ThumbnailDownloader<T> extends HandlerThread {
     private static final int MESSAGE_DOWNLOAD = 0; // Индентификатор сообщений заропосв на загрузку
     private static final int MESSAGE_PRELOAD = 1;
     private static final int CACHE_SIZE = 400;
-    private Handler mRequestHandler;  // объект Handler отвечает за постановку в очередь запрососов в фотовом потоке
+    private Handler mRequestHandler;  // объект Handler отвечает за постановку в очередь запрососов в фоновом потоке
                                       // а так же за обработку сообщений при извлечении из очереди
     private ConcurrentMap<T,String> mRequestMap = new ConcurrentHashMap<>();
-    private Handler mResponseHandler;
+    private Handler mResponseHandler;  // обработчик постановки в очередь запросов в в паралельном потоке
     private ThumbnailDownloadListener<T> mThumbnailDownloadListener;
     private LruCache<String, Bitmap> mCache;  // map кеша
 
@@ -73,8 +73,8 @@ public class ThumbnailDownloader<T> extends HandlerThread {
     }
 
     /**
-     *
-     * @param url
+     * получаем картинку в виде BitMap объекта
+     * @param url запроса картинок
      * @return
      */
     private Bitmap getBitmap(String url) {
@@ -115,19 +115,17 @@ public class ThumbnailDownloader<T> extends HandlerThread {
         }
         final Bitmap bitmap = mCache.get(url);  // извлекаем из кеша изображение
 
-        mResponseHandler.post(new Runnable() {
-            public void run () {
-                if (mRequestMap.get(target) != url) {
-                    return;
-                }
-                mRequestMap.remove(target);
-                mThumbnailDownloadListener.onThumbnailDownloaded(target, bitmap);  // передача загруженного изображения
+        mResponseHandler.post(() -> {  //lambda new Runnable, метод run
+            if (mRequestMap.get(target) != url) {
+                return;
             }
+            mRequestMap.remove(target);
+            mThumbnailDownloadListener.onThumbnailDownloaded(target, bitmap);  // передача загруженного изображения
         });
     }
 
     /**
-     *
+     * зачитска очереди
      */
     public void clearQueue() {
         mRequestHandler.removeMessages(MESSAGE_DOWNLOAD);

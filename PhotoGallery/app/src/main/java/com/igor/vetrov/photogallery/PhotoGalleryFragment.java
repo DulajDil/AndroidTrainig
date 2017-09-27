@@ -53,7 +53,7 @@ public class PhotoGalleryFragment extends Fragment{
         setRetainInstance(true);
         new FetchItemsTask().execute(currentPage);
 
-        Handler responseHandler = new Handler();
+        Handler responseHandler = new Handler(); // обработчик постановки в очередь запросов в паралельном потоке
         mThumbnailDownloader = new ThumbnailDownloader<>(responseHandler);
         mThumbnailDownloader.setThumbnailDownloadListener(
                 new ThumbnailDownloader.ThumbnailDownloadListener<PhotoHolder>() {
@@ -103,10 +103,12 @@ public class PhotoGalleryFragment extends Fragment{
         return v;
     }
 
+    /**
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mThumbnailDownloader.clearQueue();
+        mThumbnailDownloader.clearQueue(); //при разрушении вьюхи зачишаем очередь с сообщениями
     }
 
     @Override
@@ -122,6 +124,9 @@ public class PhotoGalleryFragment extends Fragment{
         }
     }
 
+    /**
+     * holder
+     */
     private class PhotoHolder extends RecyclerView.ViewHolder {
 
         private ImageView mItemImageView;
@@ -136,6 +141,9 @@ public class PhotoGalleryFragment extends Fragment{
         }
     }
 
+    /**
+     * adapter
+     */
     private class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder> {
 
         private List<GalleryItem> mGalleryItems;
@@ -208,6 +216,11 @@ public class PhotoGalleryFragment extends Fragment{
         }
     }
 
+    /**
+     * назначаем слушателя
+     * для проверки шарины текущего положения экрана
+     * для установки количества ячеек
+     */
     private void updateView() {
         ViewTreeObserver vto = mPhotoRecyclerView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener(){
