@@ -108,6 +108,7 @@ public class PhotoGalleryFragment extends Fragment{
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mThumbnailDownloader.clearCache();
         mThumbnailDownloader.clearQueue(); //при разрушении вьюхи зачишаем очередь с сообщениями
     }
 
@@ -163,14 +164,23 @@ public class PhotoGalleryFragment extends Fragment{
         @Override
         public void onBindViewHolder(PhotoHolder photoHolder, int position) {
             GalleryItem galleryItem = mGalleryItems.get(position);
+
+            Bitmap cachedImage = mThumbnailDownloader.getCachedImage(galleryItem.getUrl());
+
             Drawable placeholder;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                placeholder = getResources().getDrawable(R.drawable.anime_load_photo, getActivity().getTheme());
+            if (cachedImage == null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    placeholder = getResources().getDrawable(R.drawable.anime_load_photo, getActivity().getTheme());
+                } else {
+                    placeholder = getResources().getDrawable(R.drawable.anime_load_photo);
+                }
+                photoHolder.bindDrawable(placeholder);
+                mThumbnailDownloader.queueThumnail(photoHolder, galleryItem.getUrl());
             } else {
-                placeholder = getResources().getDrawable(R.drawable.anime_load_photo);
+                Log.w(TAG, "Loaded image from cache");
+                photoHolder.bindDrawable(new BitmapDrawable(getResources(), cachedImage));
             }
-            photoHolder.bindDrawable(placeholder);
-            mThumbnailDownloader.queueThumnail(photoHolder, galleryItem.getUrl());
+            preloadImages(position);
         }
 
         @Override
@@ -181,6 +191,28 @@ public class PhotoGalleryFragment extends Fragment{
         public void updatePhotoGallery(List<GalleryItem> items) {
             mGalleryItems = items;
             notifyDataSetChanged();
+        }
+
+        /**
+         *
+         * @param position текущая позиция фокуса
+         */
+        private void preloadImages(int position) {
+            final int imageBufferSize = 10; // колличество изображений загружаемых в кеш до и после текущей позиции
+
+            //Set the Indexes for the images to preload
+            int startIndex = Math.max(position - imageBufferSize, 0); // стартовый индекс должен быть >= 0
+            int endIndex = Math.min(position + imageBufferSize, mGalleryItems.size() - 1); //Ending index must be <= number of galleryItems - 1
+
+            //Loop over mGallery items using our index bounds
+            for (int i = startIndex; i <= endIndex; i++) {
+                //We don't need to preload the "current" item, as it is being
+                //displayed already.
+                if (i == position) continue;
+
+                String url = mGalleryItems.get(i).getUrl();
+                mThumbnailDownloader.preloadImage(url);
+            }
         }
     }
 
@@ -215,6 +247,8 @@ public class PhotoGalleryFragment extends Fragment{
             loading = true;
         }
     }
+
+
 
     /**
      * назначаем слушателя

@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentMap;
 public class ThumbnailDownloader<T> extends HandlerThread {
 
     private static final String TAG = "ThumbnailDownloader";
-    private static final int MESSAGE_DOWNLOAD = 0; // Индентификатор сообщений заропосв на загрузку
+    private static final int MESSAGE_DOWNLOAD = 0; // Индентификатор сообщений заропоса на загрузку
     private static final int MESSAGE_PRELOAD = 1;
     private static final int CACHE_SIZE = 400;
     private Handler mRequestHandler;  // объект Handler отвечает за постановку в очередь запрососов в фоновом потоке
@@ -62,14 +62,60 @@ public class ThumbnailDownloader<T> extends HandlerThread {
         mRequestHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                if (msg.what == MESSAGE_DOWNLOAD) {
-                    T target = (T) msg.obj;
-                    Log.i(TAG, "Got a request for URL: " +
-                    mRequestMap.get(target));
-                    handleRequest(target);
+                switch (msg.what) {
+                    case MESSAGE_DOWNLOAD:
+                        T target = (T) msg.obj;
+                        Log.i(TAG, "Got a request for URL: " +
+                                mRequestMap.get(target));
+                        handleRequest(target);
+                        break;
+                    case MESSAGE_PRELOAD:
+                        String url = (String) msg.obj;
+                        downloadImage(url);
+                        break;
                 }
             }
         };
+    }
+
+    /**
+     * осуществление загрузки
+     * @param target
+     */
+    private void handleRequest(T target) {
+        final String url = mRequestMap.get(target);
+        if (url == null) {  // проверяем существования URL-а
+            return;
+        }
+
+        if (mCache.get(url) == null) {  // проверяем в кеше значение с ключем по URl-у
+            cacheLoad(url);
+        }
+
+        final Bitmap bitmap = mCache.get(url);  // извлекаем из кеша изображение
+
+        mResponseHandler.post(() -> {  //lambda new Runnable, метод run
+            if (mRequestMap.get(target) != url) {
+                return;
+            }
+            mRequestMap.remove(target);
+            mThumbnailDownloadListener.onThumbnailDownloaded(target, bitmap);  // передача загруженного изображения
+        });
+    }
+
+    private Bitmap downloadImage(String url) {
+        Bitmap bitmap;
+
+        if (url == null) // сообщать
+            return null;
+
+        bitmap = mCache.get(url);
+        if (bitmap == null) {  // проверяем в кеше значение с ключем по URl-у
+            cacheLoad(url);
+            bitmap = mCache.get(url);
+        }
+
+        return  bitmap;
     }
 
     /**
@@ -101,27 +147,26 @@ public class ThumbnailDownloader<T> extends HandlerThread {
         mCache.put(url, bitmap);
     }
 
-    /**
-     * осуществление загрузки
-     * @param target
-     */
-    private void handleRequest(T target) {
-        final String url = mRequestMap.get(target);
-        if (url == null) {  // проверяем существования URL-а
-            return;
-        }
-        if (mCache.get(url) == null) {  // проверяем в кеше значение с ключем по URl-у
-            cacheLoad(url);
-        }
-        final Bitmap bitmap = mCache.get(url);  // извлекаем из кеша изображение
+    public void preloadImage(String url) {
+        mRequestHandler.obtainMessage(MESSAGE_PRELOAD, url).sendToTarget();
+    }
 
-        mResponseHandler.post(() -> {  //lambda new Runnable, метод run
-            if (mRequestMap.get(target) != url) {
-                return;
-            }
-            mRequestMap.remove(target);
-            mThumbnailDownloadListener.onThumbnailDownloaded(target, bitmap);  // передача загруженного изображения
-        });
+    /**
+     * @param url ключ в кеше
+     * @return забираем из кеша изображение
+     */
+    public Bitmap getCachedImage(String url) {
+        if (url == null) {
+            return null;
+        }
+        return mCache.get(url);
+    }
+
+    /**
+     * очитска кеша
+     */
+    public void clearCache() {
+        mCache.evictAll();
     }
 
     /**
