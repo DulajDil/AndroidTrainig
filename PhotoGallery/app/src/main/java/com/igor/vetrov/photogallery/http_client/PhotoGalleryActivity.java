@@ -1,6 +1,8 @@
-package com.igor.vetrov.photogallery;
+package com.igor.vetrov.photogallery.http_client;
 
 import android.support.v4.app.Fragment;
+
+import com.igor.vetrov.photogallery.SingleFragmentActivity;
 
 public class PhotoGalleryActivity extends SingleFragmentActivity {
 

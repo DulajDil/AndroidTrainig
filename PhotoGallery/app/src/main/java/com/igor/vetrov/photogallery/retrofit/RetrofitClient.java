@@ -1,4 +1,4 @@
-package com.igor.vetrov.photogallery;
+package com.igor.vetrov.photogallery.retrofit;
 
 
 import retrofit2.Retrofit;

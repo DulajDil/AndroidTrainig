@@ -1,4 +1,4 @@
-package com.igor.vetrov.photogallery;
+package com.igor.vetrov.photogallery.http_client;
 
 
 import android.net.Uri;
