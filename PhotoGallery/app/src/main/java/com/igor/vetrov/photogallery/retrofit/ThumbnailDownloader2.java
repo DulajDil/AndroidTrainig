@@ -114,6 +114,8 @@ public class ThumbnailDownloader2<T> extends HandlerThread{
 
     private Bitmap getBitmap(String url) {
         try {
+            byte[] bitmapBytes = FlickrFetchr2.getUrlBytes(url);
+            final Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
             Log.i(TAG, "Bitmap created");
             return bitmap;
         } catch (IOException ioe) {

@@ -8,6 +8,7 @@ import com.igor.vetrov.photogallery.model.Photos;
 import com.igor.vetrov.photogallery.model.ResponsePhotogallery;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -77,17 +78,13 @@ public class FlickrFetchr2 {
         });
     }
 
-    public byte[] getUrlBytes(String urlSpec) throws IOException {
-        URL url = new URL(urlSpec);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-        try {
+    public static byte[] getUrlBytes(String urlSpec) throws IOException {
+        Call<ResponseBody> call = sClient.fetchImage(urlSpec);
+        Response<ResponseBody> response = call.execute();
+        if (response.isSuccessful()) {
+            ResponseBody body = response.body();
+            InputStream input = body.byteStream();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            InputStream input = connection.getInputStream();
-
-            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                throw new IOException(connection.getResponseMessage() + ": with " + urlSpec);
-            }
             int bytesRead = 0;
             byte[] buffer = new byte[1024];
             while ((bytesRead = input.read(buffer)) > 0) {
@@ -95,11 +92,9 @@ public class FlickrFetchr2 {
             }
             out.close();
             return out.toByteArray();
-        } finally {
-            connection.disconnect();
+        } else {
+            throw new IOException(response.code() + ": with " + urlSpec);
         }
-
-        sClient.fetchImage(urlSpec);
     }
 
 
