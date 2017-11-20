@@ -165,7 +165,7 @@ public class PhotoGalleryFragment extends Fragment{
         public void onBindViewHolder(PhotoHolder photoHolder, int position) {
             GalleryItem galleryItem = mGalleryItems.get(position);
 
-            Bitmap cachedImage = mThumbnailDownloader.getCachedImage(galleryItem.getUrl());
+            Bitmap cachedImage = mThumbnailDownloader.getCachedImage(galleryItem.getMUrl());
 
             Drawable placeholder;
             if (cachedImage == null) {
@@ -175,7 +175,7 @@ public class PhotoGalleryFragment extends Fragment{
                     placeholder = getResources().getDrawable(R.drawable.anime_load_photo);
                 }
                 photoHolder.bindDrawable(placeholder);
-                mThumbnailDownloader.queueThumnail(photoHolder, galleryItem.getUrl());
+                mThumbnailDownloader.queueThumnail(photoHolder, galleryItem.getMUrl());
             } else {
                 Log.w(TAG, "Loaded image from cache");
                 photoHolder.bindDrawable(new BitmapDrawable(getResources(), cachedImage));
@@ -210,7 +210,7 @@ public class PhotoGalleryFragment extends Fragment{
                 //displayed already.
                 if (i == position) continue;
 
-                String url = mGalleryItems.get(i).getUrl();
+                String url = mGalleryItems.get(i).getMUrl();
                 mThumbnailDownloader.preloadImage(url);
             }
         }

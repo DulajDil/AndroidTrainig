@@ -4,10 +4,10 @@ package com.igor.vetrov.photogallery.retrofit;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 public class CheckLoading {
 
-    @Getter
-    @Setter
     private Boolean running;
 
     private CheckLoading(Boolean running) {
