@@ -4,6 +4,13 @@ package com.igor.vetrov.photogallery.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@ToString
+@Getter
+@Setter
 public class ResponsePhotogallery {
 
     @SerializedName("photos")
@@ -12,28 +19,4 @@ public class ResponsePhotogallery {
     @SerializedName("stat")
     @Expose
     private String stat;
-
-    public Photos getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(Photos photos) {
-        this.photos = photos;
-    }
-
-    public String getStat() {
-        return stat;
-    }
-
-    public void setStat(String stat) {
-        this.stat = stat;
-    }
-
-    @Override
-    public String toString() {
-        return "ResponsePhotogallery{" +
-                "photos=" + photos +
-                ", stat='" + stat + '\'' +
-                '}';
-    }
 }

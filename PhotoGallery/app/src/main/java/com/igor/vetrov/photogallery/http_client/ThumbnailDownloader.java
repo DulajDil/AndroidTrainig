@@ -30,7 +30,7 @@ public class ThumbnailDownloader<T> extends HandlerThread {
     private LruCache<String, Bitmap> mCache;  // map кеша
 
     /**
-     * создание слушателя на обработку изображения
+     * интерфейс слушателя на обработку изображения
      * @param <T>
      */
     public interface ThumbnailDownloadListener<T> {
@@ -38,7 +38,7 @@ public class ThumbnailDownloader<T> extends HandlerThread {
     }
 
     /**
-     *
+     * добавляем слушателя
      * @param listener
      */
     public void setThumbnailDownloadListener(ThumbnailDownloadListener<T> listener) {

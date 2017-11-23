@@ -6,6 +6,13 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@ToString
+@Getter
+@Setter
 public class Photos {
 
     @SerializedName("page")
@@ -23,54 +30,4 @@ public class Photos {
     @SerializedName("photo")
     @Expose
     private List<GalleryItem> photo;
-
-    public Integer getPage() {
-        return page;
-    }
-
-    public void setPage(Integer page) {
-        this.page = page;
-    }
-
-    public Integer getPages() {
-        return pages;
-    }
-
-    public void setPages(Integer pages) {
-        this.pages = pages;
-    }
-
-    public Integer getPerpage() {
-        return perpage;
-    }
-
-    public void setPerpage(Integer perpage) {
-        this.perpage = perpage;
-    }
-
-    public Integer getTotal() {
-        return total;
-    }
-
-    public void setTotal(Integer total) {
-        this.total = total;
-    }
-
-    public List<GalleryItem> getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(List<GalleryItem> photo) {
-        this.photo = photo;
-    }
-
-    @Override
-    public String toString() {
-        return "Photos{" +
-                "page=" + page +
-                ", pages=" + pages +
-                ", perpage=" + perpage +
-                ", total=" + total +
-                '}';
-    }
 }
