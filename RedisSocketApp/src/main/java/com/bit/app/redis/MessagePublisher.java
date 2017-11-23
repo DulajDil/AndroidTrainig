@@ -1,4 +1,4 @@
-package com.bit.app.queue;
+package com.bit.app.redis;
 
 public interface MessagePublisher {
 

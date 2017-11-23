@@ -29,17 +29,8 @@ import java.util.List;
 @SpringBootTest(classes = Application.class)
 public class SocketApplicationTests {
 
-	@Test
-	@Ignore
-	public void contextLoads() {
-		WebSocketClient webSocketClient = new StandardWebSocketClient();
-		WebSocketStompClient stompClient = new WebSocketStompClient(webSocketClient);
-		stompClient.setMessageConverter(new StringMessageConverter());
-
-		String url = "ws://localhost:8080/gs-guide-websocket";
-		StompSessionHandler handler = new MySessionHandler();
-		stompClient.connect(url, handler);
-	}
+	private static String host = "localhost";
+	private static Integer port = 8080;
 
 	private final static WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
 
@@ -49,9 +40,11 @@ public class SocketApplicationTests {
 		}
 	}
 
+
 	@Test
 	@Ignore
-	public void two() {
+	public void first() {
+		log.warn("Start socket test.....");
 		Transport webSocketTransport = new WebSocketTransport(new StandardWebSocketClient());
 		List<Transport> transports = Collections.singletonList(webSocketTransport);
 
@@ -60,7 +53,9 @@ public class SocketApplicationTests {
 
 		WebSocketStompClient stompClient = new WebSocketStompClient(sockJsClient);
 
-		String url = "ws://localhost:8080/";
-		ListenableFuture<StompSession> connect = stompClient.connect(url, headers, new MyHandler(), "localhost", 8080);
+		String url = String.format("ws:/%s:%d/check-websocket", host, port);
+		ListenableFuture<StompSession> connect = stompClient.connect(url, headers, new MyHandler(), host, port);
+
+		new MySessionHandler();
 	}
 }

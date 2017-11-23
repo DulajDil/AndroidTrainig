@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class HelloMessage {
+public class FilterMessage {
 
-    private String name;
+    private Integer category;
 }

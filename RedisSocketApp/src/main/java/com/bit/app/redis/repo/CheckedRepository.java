@@ -1,4 +1,4 @@
-package com.bit.app.repo;
+package com.bit.app.redis.repo;
 
 import com.bit.app.entities.CheckEntity;
 

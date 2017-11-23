@@ -1,29 +1,31 @@
 package com.bit.app;
 
-import org.springframework.messaging.simp.stomp.StompFrameHandler;
-import org.springframework.messaging.simp.stomp.StompHeaders;
-import org.springframework.messaging.simp.stomp.StompSession;
-import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.stomp.*;
 
 import java.lang.reflect.Type;
 
+@Slf4j
 public class MySessionHandler extends StompSessionHandlerAdapter {
 
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
-//        HelloMessage helloMessage = HelloMessage.builder().name("Test Java Client").build();
-        session.send("/topic/greetings", "");
-        session.subscribe("/topic/greetings", new StompFrameHandler() {
+        session.subscribe("/user/topic/check-entity", new StompFrameHandler() {
 
-            @Override
-            public Type getPayloadType(StompHeaders headers) {
-                return String.class;
+            public Type getPayloadType(StompHeaders stompHeaders) {
+                log.warn("Stomp headers: " + stompHeaders);
+                return byte[].class;
             }
 
-            @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
-
+            public void handleFrame(StompHeaders stompHeaders, Object o) {
+                String s = new String((byte[]) o);
+                log.warn("Received subscribe " + s);
             }
         });
+    }
+
+    @Override
+    public void handleException(StompSession session, StompCommand command, StompHeaders headers, byte[] payload, Throwable exception) {
+        log.error("" + exception);
     }
 }
