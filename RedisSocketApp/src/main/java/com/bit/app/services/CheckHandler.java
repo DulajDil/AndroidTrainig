@@ -1,5 +1,6 @@
 package com.bit.app.services;
 
+import com.bit.app.entities.AbstractCheckEntity;
 import com.bit.app.entities.CheckEntity;
 import com.bit.app.queue.CheckViewQueue;
 import com.bit.app.queue.CheckPoolQueue;
@@ -35,7 +36,7 @@ public class CheckHandler {
 
     /**
      * запуск потока для юзера:
-     * @param sessionId (id юзера)
+     * @param sessionId (sessionId юзера)
      */
     private void runWorker(String sessionId) {
         log.warn("start new worker from user: " + sessionId);
@@ -49,7 +50,7 @@ public class CheckHandler {
 
     /**
      *  останавливаем поток для юзера:
-     *  @param sessionId (id юзера)
+     *  @param sessionId (sessionId юзера)
      */
     private void stopWorker(String sessionId) {
         SessionWorker sessionWorker = sessionMap.get(sessionId);
@@ -83,14 +84,14 @@ public class CheckHandler {
     /**
      * отправка сообщений клиенту
      */
-    private void sendMessage(String sessionId, CheckEntity checkEntity) {
+    private void sendMessage(String sessionId, AbstractCheckEntity abstractCheckEntity) {
         log.warn(String.format("Count threads: %s", countThread));
         simpMessagingTemplate.convertAndSendToUser(
                 sessionId,
                 "/topic/check-entity",
-                checkEntity,
+                abstractCheckEntity,
                 createHeaders(sessionId));
-        log.warn(String.format("Send message to /user/topic/check-entity: %s, session id: %s", checkEntity, sessionId));
+        log.warn(String.format("Send message to /user/topic/check-entity: %s, session sessionId: %s", abstractCheckEntity, sessionId));
     }
 
     /**
@@ -111,11 +112,9 @@ public class CheckHandler {
         @Override
         public void run() {
             checkViewQueue = checkQueue.getCheckViewQueue();
-            CheckEntity checkEntity = CheckEntity.builder().build();
             while (!Thread.interrupted()) {
                 try {
-                    String name = checkViewQueue.take();
-                    checkEntity.setName(name);
+                    AbstractCheckEntity checkEntity = checkViewQueue.take();
                     sendMessage(sessionId, checkEntity);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

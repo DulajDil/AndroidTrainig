@@ -1,6 +1,7 @@
 package com.bit.app.queue;
 
 
+import com.bit.app.entities.AbstractCheckEntity;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class CheckPoolQueue {
      *
      * @param message
      */
-    public void pushState(String message) {
+    public void pushState(AbstractCheckEntity message) {
         for (CheckViewQueue queue : queuePool.values()) {
             queue.offer(message);
         }

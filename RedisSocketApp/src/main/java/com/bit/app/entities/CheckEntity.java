@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.io.Serializable;
-
 @AllArgsConstructor
 @Data
 @Builder
-public class CheckEntity implements Serializable {
+public class CheckEntity extends AbstractCheckEntity {
 
-//    private String id;
+    private String sessionId;
     private String name;
-//    private int grade;
+    private Integer category;
 }

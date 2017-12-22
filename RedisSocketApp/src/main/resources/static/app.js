@@ -19,7 +19,7 @@ function connect() {
         setConnected(true);
         console.log('Connected: ' + frame);
         stompClient.subscribe('/user/topic/check-entity', function (checked) {
-            showSubscribe(checked);
+            showSubscribe(JSON.parse(checked.body));
         });
     });
 }

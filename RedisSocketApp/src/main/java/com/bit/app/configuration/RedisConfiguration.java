@@ -1,5 +1,7 @@
 package com.bit.app.configuration;
 
+import com.bit.app.entities.AbstractCheckEntity;
+import com.bit.app.entities.CheckEntity;
 import com.bit.app.listeners.CheckDisconnectListener;
 import com.bit.app.queue.CheckPoolQueue;
 import com.bit.app.queue.CheckRedisMessageSubscriber;
@@ -12,6 +14,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 
@@ -20,7 +23,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 public class RedisConfiguration {
 
     /**
-     * коннект к редису
+     * фабрика коннекта к редису
      */
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
@@ -29,19 +32,22 @@ public class RedisConfiguration {
     }
 
     /**
-     * RedisMessageSubscriber пользовательская реализация для обмена сообщениями
+     * адаптер слушателя сообщений, делегирующий обратку CheckRedisMessageSubscriber checkRedisMessageSubscriber.
+     * Устаналиваем слушателю сериализовать в AbstractCheckEntity объект
      */
     @Bean
     @Autowired
     MessageListenerAdapter messageListener(CheckRedisMessageSubscriber checkRedisMessageSubscriber) {
-        return new MessageListenerAdapter(checkRedisMessageSubscriber);
+        MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(checkRedisMessageSubscriber);
+        messageListenerAdapter.setSerializer(new Jackson2JsonRedisSerializer<>(CheckEntity.class));
+        return messageListenerAdapter;
     }
 
-    @Bean("topic")
-    ChannelTopic topic() {
-        return new ChannelTopic("pubsub:queue");
-    }
-
+    /**
+     * Контейнер асинхронного поведения слушателей сообщений.
+     * Обрабатывает низкоуровневые детали слушателей, преобразование и отправка сообщений.
+     * добавляем адаптер слушателей: MessageListenerAdapter messageListener
+     */
     @Bean
     @Autowired
     RedisMessageListenerContainer redisContainer(CheckRedisMessageSubscriber checkRedisMessageSubscriber) {
@@ -51,6 +57,14 @@ public class RedisConfiguration {
         return container;
     }
 
+    @Bean("topic")
+    ChannelTopic topic() {
+        return new ChannelTopic("pubsub:queue");
+    }
+
+    /**
+     * Обработчик сокет подписок
+     */
     @Bean
     @Autowired
     CheckHandler checkHandler(SimpMessagingTemplate simpMessagingTemplate,
@@ -58,6 +72,9 @@ public class RedisConfiguration {
         return new CheckHandler(simpMessagingTemplate, checkPoolQueue);
     }
 
+    /**
+     * слушатель завершения сокет сессий
+     */
     @Bean
     @Autowired
     CheckDisconnectListener checkDisconnectListener(SimpMessagingTemplate simpMessagingTemplate,
